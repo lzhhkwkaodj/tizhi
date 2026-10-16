@@ -5,94 +5,179 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>中医体质自测 · 九种体质分类与判定</title>
 <meta name="description" content="依据《中医体质分类与判定》标准量表自测你的中医体质：9 种体质、自动计分、给出养生调理方向。仅供健康参考，不构成医疗诊断。">
-<meta name="theme-color" content="#1f3d33">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌿</text></svg>">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#f2f2f7">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000000">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%2332d77b'/><text y='.78em' x='50%' text-anchor='middle' font-size='62'>🌿</text></svg>">
 <style>
 :root{
-  --paper:#f7f3ea; --ink:#22251f; --muted:#6b6f63;
-  --brand:#1f3d33; --brand-soft:#e4ebe3; --accent:#b4552d; --line:#ded6c6;
-  --ok:#3a7d5d; --warn:#c07a1e; --hot:#b4552d;
-  --r:16px; --shadow:0 6px 24px rgba(34,37,31,.08);
+  color-scheme: light dark;
+  --bg:#f2f2f7; --card:#ffffff;
+  --ink:#1c1c1e; --ink2:#2c2c2e; --muted:#8a8a8f; --sep:rgba(60,60,67,.12);
+  --fill2:rgba(120,120,128,.16);
+  --jade:#2fd07a; --teal:#25a5c9; --blue:#007aff; --amber:#ff9500; --red:#ff3b30;
+  --grad:linear-gradient(120deg,var(--jade),var(--teal) 55%,var(--blue));
+  --r:22px; --r-sm:14px;
+  --sh:0 1px 2px rgba(0,0,0,.04), 0 10px 30px rgba(0,0,0,.055);
+  --spring:cubic-bezier(.32,.72,0,1);
+}
+@media (prefers-color-scheme:dark){
+  :root{ --bg:#000; --card:#1c1c1e; --ink:#f5f5f7; --ink2:#d8d8dc; --muted:#8e8e93;
+    --sep:rgba(84,84,88,.55); --fill2:rgba(120,120,128,.24);
+    --blue:#0a84ff; --jade:#30d158; --sh:0 1px 2px rgba(0,0,0,.6), 0 14px 34px rgba(0,0,0,.55); }
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;padding:0}
 body{
-  background:var(--paper); color:var(--ink);
-  font:16px/1.65 -apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
-  -webkit-font-smoothing:antialiased;
+  background:var(--bg); color:var(--ink); min-height:100vh;
+  font:17px/1.5 -apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
 }
-.wrap{max-width:560px;margin:0 auto;padding:20px 18px calc(28px + env(safe-area-inset-bottom))}
-h1,h2,h3{margin:0;font-weight:700;letter-spacing:.5px}
-.screen{display:none;animation:fade .25s ease}
-.screen.on{display:block}
-@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-.card{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:20px;box-shadow:var(--shadow);margin-bottom:16px}
-.hero{background:linear-gradient(160deg,#244137,#1b3029 60%,#16261f);color:#f5f0e4;border-radius:20px;padding:26px 22px;margin-bottom:18px;position:relative;overflow:hidden}
-.hero:after{content:"";position:absolute;right:-40px;top:-40px;width:180px;height:180px;border-radius:50%;background:rgba(255,255,255,.06)}
-.hero .tag{display:inline-block;font-size:12px;letter-spacing:2px;border:1px solid rgba(245,240,228,.4);border-radius:999px;padding:3px 12px;margin-bottom:14px}
-.hero h1{font-size:27px;line-height:1.3;margin-bottom:8px}
-.hero p{margin:0;color:#cfd8cd;font-size:14px}
-.meta{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
-.meta span{background:rgba(255,255,255,.1);border-radius:10px;padding:6px 12px;font-size:12.5px;color:#e7e2d5}
-h2.sec{font-size:16px;margin:22px 0 10px;color:var(--brand);letter-spacing:1px}
-ul.tips{margin:0;padding-left:18px;color:var(--muted);font-size:14px}
-ul.tips li{margin:6px 0}
-.btn{display:block;width:100%;border:0;border-radius:14px;padding:16px;font-size:17px;font-weight:700;cursor:pointer;transition:transform .1s}
-.btn:active{transform:scale(.985)}
-.btn:disabled{opacity:.45;cursor:not-allowed}
-.btn.primary{background:var(--brand);color:#f7f3ea}
-.btn.ghost{background:#fff;color:var(--brand);border:1px solid var(--line)}
-.btn.soft{background:var(--brand-soft);color:var(--brand)}
+body::before{ /* 顶部环境光，iOS 壁纸感 */
+  content:""; position:fixed; inset:0 0 auto; height:460px; z-index:0; pointer-events:none;
+  background:
+    radial-gradient(58% 44% at 16% 2%, rgba(47,208,122,.26), transparent 62%),
+    radial-gradient(52% 40% at 86% 8%, rgba(0,122,255,.22), transparent 64%);
+}
+.wrap{position:relative;z-index:1;max-width:560px;margin:0 auto;padding:calc(14px + env(safe-area-inset-top)) 18px calc(34px + env(safe-area-inset-bottom))}
+h1,h2,h3{margin:0;font-weight:700;letter-spacing:-.02em}
+.screen{display:none;overflow-x:clip}  /* clip：切题滑入动画会短暂超出视口，clip 不产生滚动容器、不影响 sticky */
+.screen.on{display:block;animation:rise .5s var(--spring) both}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+/* ---------- 分组卡片 ---------- */
+.card{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);padding:20px;margin-bottom:14px}
+.list{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;margin-bottom:14px}
+.list>.row+.row{box-shadow:inset 0 -1px 0 var(--sep)}
+.list>.row:last-child{box-shadow:none}
+.seclab{margin:26px 6px 8px;font-size:13px;font-weight:600;letter-spacing:.04em;color:var(--muted)}
+.note{font-size:14px;color:var(--muted);line-height:1.65}
+.src{font-size:12px;color:var(--muted);line-height:1.7;margin:14px 6px 0;opacity:.85}
+
+/* ---------- 首页 ---------- */
+.eyebrow{display:inline-flex;align-items:center;gap:6px;padding:6px 13px;border-radius:999px;
+  font-size:12.5px;font-weight:600;letter-spacing:.02em;color:var(--ink2);
+  background:var(--fill2);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px)}
+.eyebrow i{width:7px;height:7px;border-radius:50%;background:var(--jade);box-shadow:0 0 0 3px rgba(47,208,122,.2)}
+.title{font-size:36px;line-height:1.14;letter-spacing:-.03em;font-weight:800;margin:16px 0 10px}
+.title em{font-style:normal;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.lede{margin:0;font-size:16px;color:var(--muted);line-height:1.6}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.chips span{padding:7px 12px;border-radius:12px;font-size:13px;font-weight:600;color:var(--ink2);
+  background:var(--card);box-shadow:var(--sh)}
+ul.tips{margin:0;padding:0;list-style:none;counter-reset:t}
+ul.tips li{counter-increment:t;position:relative;padding:11px 0 11px 30px;font-size:15px;color:var(--ink2);
+  border-bottom:1px solid var(--sep)}
+ul.tips li:last-child{border-bottom:0;padding-bottom:2px}
+ul.tips li:before{content:counter(t);position:absolute;left:0;top:12px;width:21px;height:21px;border-radius:50%;
+  display:grid;place-items:center;font-size:11px;font-weight:700;color:#fff;background:var(--grad)}
+
+/* ---------- 按钮 ---------- */
+.btn{display:block;width:100%;border:0;border-radius:16px;padding:17px;font-size:17px;font-weight:600;
+  font-family:inherit;letter-spacing:-.01em;color:var(--ink);background:var(--fill2);cursor:pointer;
+  transition:transform .22s var(--spring),opacity .2s,background .2s}
+.btn:active{transform:scale(.965);opacity:.7}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.btn.primary{background:var(--ink);color:var(--bg)}
 .btn+.btn{margin-top:10px}
-.note{font-size:12.5px;color:var(--muted);line-height:1.7}
-.src{font-size:11.5px;color:#9a9c8f;margin-top:10px}
-/* quiz */
-.topbar{position:sticky;top:0;z-index:5;background:var(--paper);padding:12px 0 8px;margin:-4px 0 6px}
-.prow{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--muted);margin-bottom:8px}
-.prow b{color:var(--brand);font-size:14px}
-.bar{height:5px;background:var(--line);border-radius:99px;overflow:hidden}
-.bar i{display:block;height:100%;background:var(--brand);border-radius:99px;transition:width .25s}
-.qnum{font-size:13px;letter-spacing:3px;color:#a9a596;font-weight:700}
-.qtext{font-size:22px;line-height:1.5;font-weight:700;margin:10px 0 22px;min-height:66px}
-.opts{display:flex;flex-direction:column;gap:10px}
-.opt{background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:15px 16px;font-size:16.5px;font-weight:600;color:var(--ink);cursor:pointer;text-align:left;display:flex;justify-content:space-between;align-items:center;transition:.12s}
-.opt small{font-weight:400;color:#a9a596;font-size:12px}
-.opt.sel{border-color:var(--brand);background:var(--brand);color:#f7f3ea}
-.opt.sel small{color:#bccfc4}
-.nav{display:flex;gap:10px;margin-top:18px}
-.nav .btn{flex:1;padding:13px;font-size:15px}
-/* result */
-.badge{display:inline-flex;align-items:center;gap:8px;background:var(--brand);color:#f7f3ea;border-radius:999px;padding:7px 16px;font-size:15px;font-weight:700}
-.rh{margin-bottom:6px}
-.rh .big{font-size:30px;font-weight:800;line-height:1.25;margin:12px 0 4px}
-.rh .sub{color:var(--muted);font-size:14px}
-.scorebar{margin:12px 0}
-.scorebar .lab{display:flex;justify-content:space-between;font-size:13.5px;margin-bottom:5px}
-.scorebar .lab em{font-style:normal;color:var(--muted)}
-.scorebar .track{height:9px;background:#efe9dc;border-radius:99px;overflow:hidden}
-.scorebar .track i{display:block;height:100%;border-radius:99px;background:#cfd6cb;transition:width .6s ease}
-.scorebar.hi .track i{background:var(--accent)}
-.scorebar.mid .track i{background:var(--warn)}
-.scorebar.ping .track i{background:var(--ok)}
-.pills{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 2px}
-.pill{border-radius:10px;padding:5px 11px;font-size:13px;background:var(--brand-soft);color:var(--brand);font-weight:600}
-.pill.on{background:#f3e0d6;color:var(--accent)}
+
+/* ---------- 分段控件 ---------- */
+.seg{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:0;padding:2px;border-radius:13px;background:var(--fill2)}
+.seg-thumb{position:absolute;top:2px;left:2px;width:calc(50% - 4px);height:calc(100% - 4px);border-radius:11px;
+  background:var(--card);box-shadow:0 1px 3px rgba(0,0,0,.14);transition:transform .34s var(--spring)}
+.seg[data-sel="M"] .seg-thumb{transform:translateX(calc(100% + 4px))}
+.seg-i{position:relative;z-index:1;border:0;background:none;padding:11px;font:inherit;font-size:16px;font-weight:600;
+  color:var(--muted);cursor:pointer;transition:color .25s}
+.seg-i.on{color:var(--ink)}
+
+/* ---------- 答题 ---------- */
+.topbar{position:sticky;top:0;z-index:5;margin:calc(-1 * env(safe-area-inset-top) - 14px) -18px 14px;padding:14px 18px 10px;
+  background:color-mix(in srgb,var(--bg) 72%,transparent);
+  backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);
+  border-bottom:1px solid var(--sep)}
+@supports not (background:color-mix(in srgb,red 50%,transparent)){.topbar{background:var(--bg)}}
+.prow{display:flex;justify-content:space-between;align-items:baseline;font-size:13px;color:var(--muted);margin-bottom:9px}
+.prow b{font-size:15px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.bar{height:4px;border-radius:99px;background:var(--fill2);overflow:hidden}
+.bar i{display:block;height:100%;border-radius:99px;background:var(--grad);width:0;
+  transition:width .45s var(--spring)}
+.qbody{animation:qin .38s var(--spring) both}
+@keyframes qin{from{opacity:0;transform:translateX(22px)}to{opacity:1;transform:none}}
+.qnum{font-size:12px;font-weight:700;letter-spacing:.16em;color:var(--muted)}
+.qtext{font-size:25px;line-height:1.4;font-weight:700;letter-spacing:-.02em;margin:10px 0 22px;min-height:70px}
+.opt{display:flex;justify-content:space-between;align-items:center;width:100%;border:0;background:none;
+  padding:17px 20px;font:inherit;font-size:17px;font-weight:600;letter-spacing:-.01em;color:var(--ink);
+  text-align:left;cursor:pointer;transition:background .18s,transform .18s var(--spring)}
+.opt:active{transform:scale(.985);background:var(--fill2)}
+.opt small{font-weight:500;color:var(--muted);font-size:13px;font-variant-numeric:tabular-nums}
+.opt .tick{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;flex:0 0 auto;
+  background:var(--grad);color:#fff;font-size:13px;font-weight:800;
+  opacity:0;transform:scale(.4);transition:.3s var(--spring)}
+.opt.sel .tick{opacity:1;transform:scale(1)}
+.opt.sel small{opacity:0}
+.nav{display:flex;gap:10px}
+.nav .btn{flex:1;padding:15px;font-size:16px}
+
+/* ---------- 结果 ---------- */
+.rhero{display:grid;grid-template-columns:96px 1fr;gap:18px;align-items:center}
+.ringwrap{position:relative;width:96px;height:96px}
+.ringwrap b{position:absolute;inset:0;display:grid;place-items:center;align-content:center;gap:0;
+  font-size:26px;font-weight:800;letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums}
+.ringwrap b:after{content:'转化分';font-size:10px;font-weight:600;letter-spacing:.02em;color:var(--muted);margin-top:3px}
+.ring{width:96px;height:96px;transform:rotate(-90deg)}
+.ring circle{fill:none;stroke-width:9;stroke-linecap:round}
+.ring .t{stroke:var(--fill2)}
+.ring .v{stroke:url(#rg);stroke-dasharray:264;stroke-dashoffset:264;transition:stroke-dashoffset 1s var(--spring) .1s}
+.badge{display:inline-flex;align-items:center;padding:5px 11px;border-radius:999px;font-size:12.5px;font-weight:600;
+  background:rgba(47,208,122,.18);color:#1a7f4b}
+@media (prefers-color-scheme:dark){.badge{color:#5ff09a}}
+.rh .big{font-size:32px;font-weight:800;line-height:1.15;letter-spacing:-.03em;margin:9px 0 5px}
+.rh .sub{font-size:14px;color:var(--muted);letter-spacing:-.01em}
+.pills{display:flex;flex-wrap:wrap;gap:7px;margin:2px 0}
+.pill{border-radius:11px;padding:6px 11px;font-size:13px;font-weight:600;color:var(--ink2);
+  background:var(--fill2);font-variant-numeric:tabular-nums}
+.pill.on{background:var(--grad);color:#fff}
+.scorebar{margin:15px 0}
+.scorebar .lab{display:flex;justify-content:space-between;align-items:baseline;font-size:15px;margin-bottom:7px}
+.scorebar .lab b{font-weight:600}
+.scorebar .lab em{font-style:normal;font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.scorebar .track{height:7px;background:var(--fill2);border-radius:99px;overflow:hidden}
+.scorebar .track i{display:block;height:100%;border-radius:99px;background:var(--muted);opacity:.5;width:0;
+  transition:width .8s var(--spring)}
+.scorebar.hi .track i{background:linear-gradient(90deg,var(--amber),var(--red));opacity:1}
+.scorebar.mid .track i{background:linear-gradient(90deg,var(--jade),var(--amber));opacity:1}
+.scorebar.ping .track i{background:var(--grad);opacity:1}
 .adv{margin:0;padding:0;list-style:none}
-.adv li{padding:13px 0;border-bottom:1px dashed var(--line)}
-.adv li:last-child{border:0}
-.adv h4{margin:0 0 4px;font-size:15px;color:var(--brand);display:flex;gap:8px;align-items:baseline}
-.adv h4 span{font-size:11px;letter-spacing:1px;color:#a9a596;font-weight:600}
-.adv p{margin:0;font-size:14.5px;color:#4b4f45}
-.disc{background:#fbf6ec;border:1px solid #e8dcc4;border-radius:14px;padding:15px 16px;font-size:13.5px;line-height:1.8;color:#6a5a3c}
-.disc b{display:block;color:#8a5a1e;margin-bottom:3px;font-size:14px}
-/* modal / share */
-.mask{position:fixed;inset:0;background:rgba(20,22,18,.62);display:none;align-items:flex-end;justify-content:center;z-index:40;padding:0}
-.mask.on{display:flex}
-.sheet{background:var(--paper);width:100%;max-width:560px;border-radius:22px 22px 0 0;padding:20px 18px calc(20px + env(safe-area-inset-bottom));max-height:92vh;overflow:auto}
-.sheet h3{font-size:18px;margin-bottom:4px}
-#shareImg{width:100%;border-radius:14px;border:1px solid var(--line);display:block;margin:12px 0}
+.adv li{padding:15px 0;border-bottom:1px solid var(--sep)}
+.adv li:first-child{padding-top:2px}
+.adv li:last-child{border:0;padding-bottom:2px}
+.adv h4{margin:0 0 5px;font-size:15px;letter-spacing:-.01em;display:flex;gap:9px;align-items:baseline}
+.adv h4 span{font-size:11px;font-weight:600;letter-spacing:.06em;color:var(--jade)}
+.adv p{margin:0;font-size:15px;line-height:1.65;color:var(--ink2)}
+.disc{border-radius:var(--r);padding:17px 19px;font-size:14px;line-height:1.75;color:var(--ink2);
+  background:rgba(255,149,0,.13);border:1px solid rgba(255,149,0,.28)}
+.disc b{display:block;color:#8a5a00;font-size:14px;margin-bottom:4px;letter-spacing:.02em}
+@media (prefers-color-scheme:dark){.disc{color:#e6d6bd}.disc b{color:#ffd48a}}
+
+/* ---------- 底部抽屉 ---------- */
+.mask{position:fixed;inset:0;z-index:40;display:flex;align-items:flex-end;justify-content:center;
+  background:rgba(0,0,0,.34);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  opacity:0;pointer-events:none;transition:opacity .3s ease}
+.mask.on{opacity:1;pointer-events:auto}
+.sheet{width:100%;max-width:560px;max-height:92vh;overflow:auto;padding:10px 18px calc(22px + env(safe-area-inset-bottom));
+  background:var(--card);border-radius:26px 26px 0 0;box-shadow:0 -12px 40px rgba(0,0,0,.22);
+  transform:translateY(100%);transition:transform .5s var(--spring)}
+.mask.on .sheet{transform:none}
+.grab{width:36px;height:5px;border-radius:99px;background:var(--fill2);margin:2px auto 14px}
+.sheet h3{font-size:22px;font-weight:700;letter-spacing:-.025em;margin-bottom:5px}
+#shareImg{width:100%;border-radius:20px;display:block;margin:16px 0;box-shadow:var(--sh)}
 canvas{display:none}
-@media (min-width:600px){.mask.on{align-items:center}.sheet{border-radius:22px;max-width:520px}}
+@media (min-width:600px){
+  .mask{align-items:center}.sheet{border-radius:26px;max-width:520px;transform:scale(.94) translateY(12px);opacity:0}
+  .mask.on .sheet{transform:none;opacity:1}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001s!important;transition-duration:.001s!important}
+}
 </style>
 </head>
 <body>
@@ -100,37 +185,36 @@ canvas{display:none}
 
   <!-- ========== 首页 ========== -->
   <section class="screen on" id="s-home">
-    <div class="hero">
-      <span class="tag">中医体质 · 标准量表</span>
-      <h1>你属于九种体质里的哪一种？</h1>
-      <p>按《中医体质分类与判定》标准量表自测，答完自动出转化分与判定结果。</p>
-      <div class="meta">
+    <header style="padding:12px 6px 22px">
+      <span class="eyebrow"><i></i>国标量表 · <span id="homeStd">GB/T 46939—2025</span></span>
+      <h1 class="title">九种体质<br>你是<em>哪一种</em>？</h1>
+      <p class="lede">按《中医体质分类与判定》原量表自测，答完自动算原始分与转化分，给出判定结果。</p>
+      <div class="chips">
         <span id="homeCount">— 道题</span>
         <span>约 3–5 分钟</span>
-        <span>不用注册 · 不收集个人信息</span>
+        <span>不用注册 · 不收集信息</span>
       </div>
-    </div>
+    </header>
 
-    <div class="card">
-      <h2 class="sec" style="margin-top:0">填答须知</h2>
-      <ul class="tips" id="homeTips"></ul>
-    </div>
+    <h2 class="seclab">填答须知</h2>
+    <div class="card"><ul class="tips" id="homeTips"></ul></div>
 
+    <h2 class="seclab">先选一下性别</h2>
     <div class="card">
-      <h2 class="sec" style="margin-top:0">先选一下性别</h2>
-      <p class="note" style="margin-bottom:12px">国标附录A 的湿热质量表里有两条性别限定条目（限女性回答 / 限男性回答）。这里只用来跳过你不适用的那道题，答案只存在你手机里，不会上传。</p>
-      <div class="opts" id="sexRow">
-        <button class="opt" data-sex="F">女<small>F</small></button>
-        <button class="opt" data-sex="M">男<small>M</small></button>
+      <p class="note" style="margin:0 0 14px">国标附录A 的湿热质量表里有两条性别限定条目（限女性回答 / 限男性回答）。这里只用来跳过你不适用的那道题，答案只存在你手机里，不会上传。</p>
+      <div class="seg" id="sexRow">
+        <span class="seg-thumb" aria-hidden="true"></span>
+        <button class="seg-i" data-sex="F">女</button>
+        <button class="seg-i" data-sex="M">男</button>
       </div>
     </div>
 
     <button class="btn primary" id="goStart">开始自测</button>
-    <button class="btn ghost" id="goResume" style="display:none">继续上次未答完的</button>
+    <button class="btn" id="goResume" style="display:none">继续上次未答完的</button>
 
     <p class="src" id="homeSrc"></p>
 
-    <div class="disc" style="margin-top:14px">
+    <div class="disc" style="margin-top:16px">
       <b>重要提示</b>
       仅供健康参考，不构成医疗诊断，请咨询执业医师。本页面不采集、不上传任何个人信息，答题记录只保存在你自己的手机里。
     </div>
@@ -140,47 +224,58 @@ canvas{display:none}
   <section class="screen" id="s-quiz">
     <div class="topbar">
       <div class="prow"><span id="qProg">第 1 / — 题</span><b id="qPct">0%</b></div>
-      <div class="bar"><i id="qBar" style="width:0%"></i></div>
+      <div class="bar"><i id="qBar"></i></div>
     </div>
-    <div class="card">
-      <div class="qnum" id="qNo">01</div>
-      <div class="qtext" id="qText">—</div>
-      <div class="opts" id="qOpts"></div>
+    <div class="qbody">
+      <div style="padding:6px">
+        <div class="qnum" id="qNo">01</div>
+        <div class="qtext" id="qText">—</div>
+      </div>
+      <div class="list" id="qOpts"></div>
     </div>
-    <div class="nav">
-      <button class="btn soft" id="qPrev">← 上一题</button>
-      <button class="btn primary" id="qNext">下一题 →</button>
+    <div class="nav" style="margin-top:16px">
+      <button class="btn" id="qPrev">上一题</button>
+      <button class="btn primary" id="qNext">下一题</button>
     </div>
-    <p class="note" style="margin-top:14px">按你最近一年最常见的感觉作答，别想太久——第一反应往往最准。</p>
+    <p class="src" style="margin-top:16px">按最近一年最常见的感觉作答，别想太久——第一反应往往最准。</p>
   </section>
 
   <!-- ========== 结果 ========== -->
   <section class="screen" id="s-result">
-    <div class="card">
-      <div class="rh">
-        <span class="badge" id="rBadge">—</span>
-        <div class="big" id="rMain">—</div>
-        <div class="sub" id="rSub">—</div>
+    <div class="card" style="margin-top:6px">
+      <div class="rhero">
+        <div class="ringwrap">
+          <svg class="ring" viewBox="0 0 100 100" aria-hidden="true">
+            <defs><linearGradient id="rg" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#2fd07a"/><stop offset=".55" stop-color="#25a5c9"/><stop offset="1" stop-color="#007aff"/>
+            </linearGradient></defs>
+            <circle class="t" cx="50" cy="50" r="42"/><circle class="v" id="rRing" cx="50" cy="50" r="42"/>
+          </svg>
+          <b id="rRingNum">—</b>
+        </div>
+        <div class="rh">
+          <span class="badge" id="rBadge">—</span>
+          <div class="big" id="rMain">—</div>
+          <div class="sub" id="rSub">—</div>
+        </div>
       </div>
-      <div id="rPills" class="pills"></div>
-      <p class="note" id="rWhy" style="margin-top:12px"></p>
+      <div id="rPills" class="pills" style="margin-top:18px"></div>
+      <p class="note" id="rWhy" style="margin-top:12px;font-size:15px;color:var(--ink2)"></p>
     </div>
 
+    <h2 class="seclab">九种体质转化分</h2>
     <div class="card">
-      <h2 class="sec" style="margin-top:0">九种体质转化分</h2>
       <div id="rBars"></div>
-      <p class="note" style="margin-top:14px" id="rRule"></p>
+      <p class="note" style="margin-top:16px;font-size:13px" id="rRule"></p>
     </div>
 
-    <div class="card">
-      <h2 class="sec" style="margin-top:0" id="rAdvTitle">养生调理方向</h2>
-      <ul class="adv" id="rAdv"></ul>
-    </div>
+    <h2 class="seclab" id="rAdvTitle">养生调理方向</h2>
+    <div class="card"><ul class="adv" id="rAdv"></ul></div>
 
     <button class="btn primary" id="rShare">保存结果卡片 · 发小红书</button>
-    <button class="btn soft" id="rAll">看看九种体质详解</button>
-    <a class="btn ghost" id="rContact" style="display:none;text-align:center;text-decoration:none"></a>
-    <button class="btn ghost" id="rAgain">重新测一次</button>
+    <button class="btn" id="rAll">看看九种体质详解</button>
+    <a class="btn" id="rContact" style="display:none;text-align:center;text-decoration:none"></a>
+    <button class="btn" id="rAgain">重新测一次</button>
 
     <div class="disc" style="margin-top:16px">
       <b>免责声明</b>
@@ -191,18 +286,20 @@ canvas{display:none}
 
   <!-- ========== 九种体质详解 ========== -->
   <section class="screen" id="s-gloss">
-    <div class="card"><h2 class="sec" style="margin-top:0">九种体质速查</h2><div id="glList"></div></div>
+    <h2 class="seclab" style="margin-top:10px">九种体质速查</h2>
+    <div class="list" id="glList"></div>
     <button class="btn primary" id="glBack">返回结果</button>
   </section>
 
   <!-- ========== 分享弹层 ========== -->
   <div class="mask" id="mShare">
     <div class="sheet">
+      <div class="grab"></div>
       <h3>你的体质卡片</h3>
-      <p class="note">长按图片保存，发小红书/朋友圈时配一句「测出来是XX质，你呢？」最容易引人跟测。</p>
+      <p class="note">手机上长按图片保存，电脑上点「下载图片」。发小红书/朋友圈时配一句「测出来是XX质，你呢？」最容易引人跟测。</p>
       <img id="shareImg" alt="体质结果卡片">
       <button class="btn primary" id="shSave" style="display:none">下载图片</button>
-      <button class="btn ghost" id="shClose">关闭</button>
+      <button class="btn" id="shClose">关闭</button>
     </div>
   </div>
 
@@ -277,14 +374,17 @@ function judge() {
 /* ---------- 首页 ---------- */
 function renderHome() {
   $('homeCount').textContent = (state.sex ? qList().length : S.questions.length) + ' 道题';
+  $('homeStd').textContent = S.standard;
   $('homeTips').innerHTML = S.tips.map(t => `<li>${t}</li>`).join('');
   $('homeSrc').textContent = S.source;
-  $('sexRow').querySelectorAll('.opt').forEach(b => b.classList.toggle('sel', b.dataset.sex === state.sex));
+  $('sexRow').dataset.sel = state.sex;
+  $('sexRow').querySelectorAll('.seg-i').forEach(b => b.classList.toggle('on', b.dataset.sex === state.sex));
   $('goStart').disabled = !state.sex;
   $('goResume').style.display = answeredCount() > 0 ? 'block' : 'none';
 }
 
 /* ---------- 答题 ---------- */
+let lock = false;
 function renderQ() {
   const qs = qList();
   const it = qs[state.i];
@@ -296,16 +396,25 @@ function renderQ() {
   $('qText').textContent = it.text + (it.note ? `（${it.note}）` : '');
   $('qOpts').innerHTML = S.scale.labels.map((lb, idx) => {
     const v = idx + 1;
-    return `<button class="opt${state.answers[it.id] === v ? ' sel' : ''}" data-v="${v}">${lb}<small>${v}</small></button>`;
+    return `<button class="opt row${state.answers[it.id] === v ? ' sel' : ''}" data-v="${v}">${lb}<small>${v}</small><span class="tick">✓</span></button>`;
   }).join('');
   $('qPrev').disabled = state.i === 0;
-  $('qNext').textContent = state.i === qs.length - 1 ? '看结果 ✓' : '下一题 →';
+  $('qNext').textContent = state.i === qs.length - 1 ? '看结果' : '下一题';
+  const qb = document.querySelector('#s-quiz .qbody');
+  qb.classList.remove('qbody'); void qb.offsetWidth; qb.classList.add('qbody');
   $('qOpts').querySelectorAll('.opt').forEach(b => b.onclick = () => {
+    if (lock) return;
+    lock = true;
     state.answers[it.id] = +b.dataset.v;
     save();
-    if (state.i === qs.length - 1 && !answeredAll()) { jumpToFirstUnanswered(); }
-    else if (state.i === qs.length - 1) { finish(); }
-    else { state.i++; renderQ(); }
+    b.classList.add('sel');
+    const go = () => {
+      lock = false;
+      if (state.i === qs.length - 1 && !answeredAll()) jumpToFirstUnanswered();
+      else if (state.i === qs.length - 1) finish();
+      else { state.i++; renderQ(); }
+    };
+    setTimeout(go, 260);
   });
 }
 function jumpToFirstUnanswered() {
@@ -332,11 +441,15 @@ function finish() {
   $('rBadge').textContent = pending ? '自测结果' : isPing ? '标准判定' : '主体质';
   $('rMain').textContent = pending ? '暂未判定' : main.name;
   $('rSub').textContent = pending
-    ? `最高一项为 ${main.name}（转化分 ${sc[main.key].conv}），未达判定线`
-    : `${main.name} 转化分 ${sc[main.key].conv} · 判定结果：${level}`;
+    ? `最高一项 ${main.name}，未达判定线`
+    : `判定结果：${level} · 原始分 ${sc[main.key].raw}/${sc[main.key].n}`;
   $('rWhy').textContent = pending
     ? '各项转化分都未达到标准判定线。这通常说明当下身体状态比较平稳，或答题时偏向了同一种感觉。可以过段时间再测一次；若确实有不适，请由执业医师四诊合参判断。'
     : main.feature;
+
+  // 圆环：主体质转化分（0–100），周长 2πr = 2π×42 ≈ 264
+  $('rRingNum').textContent = sc[main.key].conv;
+  $('rRing').style.strokeDashoffset = 264 - 264 * Math.min(100, sc[main.key].conv) / 100;
 
   $('rPills').innerHTML = S.dims
     .filter(d => verdict[d.key] !== '否')
@@ -348,7 +461,7 @@ function finish() {
     const c = sc[d.key].conv, v = verdict[d.key];
     const cls = v === '是' ? 'hi' : v === '倾向是' || v === '基本是' ? 'mid' : d.key === S.pingheKey ? 'ping' : '';
     return `<div class="scorebar ${cls}">
-      <div class="lab"><span>${d.name}</span><em>${c} 分 · ${v}</em></div>
+      <div class="lab"><b>${d.name}</b><em>${c} 分 · ${v}</em></div>
       <div class="track"><i style="width:${Math.max(2, Math.min(100, c))}%"></i></div>
     </div>`;
   }).join('');
@@ -359,7 +472,7 @@ function finish() {
   const target = pending ? pinghe : main;
   $('rAdvTitle').textContent = pending ? '未达判定线 · 可先参考平和质的日常保养' : main.name + ' · 养生调理方向';
   $('rAdv').innerHTML =
-    (target.principle ? `<li style="padding-top:0"><h4>调体原则<span>治未病干预指南</span></h4><p>${target.principle}</p></li>` : '') +
+    (target.principle ? `<li><h4>调体原则<span>治未病干预指南</span></h4><p>${target.principle}</p></li>` : '') +
     (target.advice || []).map(a => `<li><h4>${a.t}<span>${a.k}</span></h4><p>${a.d}</p></li>`).join('') +
     (last.兼夹.length ? `<li><h4>兼夹<span>${last.兼夹.map(d => d.name).join('、')}</span></h4><p>${A.jianjia || ''}</p></li>` : '') +
     `<li><p class="note">${S.adviceSource}</p></li>`;
@@ -376,69 +489,121 @@ function finish() {
 /* ---------- 九种体质详解 ---------- */
 function renderGloss() {
   $('glList').innerHTML = S.dims.map(d => `
-    <div style="padding:14px 0;border-bottom:1px dashed var(--line)">
-      <h3 style="font-size:16px;color:var(--brand);margin-bottom:5px">${d.name}</h3>
-      <p class="note" style="margin:0 0 8px">${d.feature}</p>
-      <p class="note" style="margin:0">${(d.advice || []).map(a => `【${a.t}】${a.d}`).join(' ')}</p>
-    </div>`).join('') + `<p class="src">${S.source} ${S.adviceSource}</p>
-    <div class="disc" style="margin-top:12px"><b>提示</b>仅供健康参考，不构成医疗诊断，请咨询执业医师。</div>`;
+    <div class="row" style="padding:17px 20px;border-bottom:1px solid var(--sep)">
+      <h3 style="font-size:17px;letter-spacing:-.02em;margin-bottom:6px">${d.name}</h3>
+      <p class="note" style="margin:0 0 8px;color:var(--ink2)">${d.feature}</p>
+      <p class="note" style="margin:0;font-size:13.5px">${(d.advice || []).map(a => `【${a.t}】${a.d}`).join(' ')}</p>
+    </div>`).join('') + `<p class="src" style="margin:14px 6px 0">${S.source} ${S.adviceSource}</p>
+    <div class="disc" style="margin:4px 0 14px"><b>提示</b>仅供健康参考，不构成医疗诊断，请咨询执业医师。</div>`;
 }
 
 /* ---------- 分享卡片（1080×1440，小红书 3:4） ---------- */
+const FONT = '-apple-system,"SF Pro Display","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif';
 function drawCard() {
   if (!last) return;
   const cv = $('cv'), x = cv.getContext('2d'), W = cv.width, H = cv.height;
-  const { sc, main } = last;
-  x.fillStyle = '#1f3d33'; x.fillRect(0, 0, W, H);
-  x.fillStyle = '#f7f3ea';
-  roundRect(x, 60, 60, W - 120, H - 120, 34); x.fill();
+  const { sc, main, level } = last;
+  const pending = level === '未达判定线';
+  const conv = sc[main.key].conv;
 
-  const px = 120; let y = 190;
-  x.fillStyle = '#8b8f80'; x.font = '600 30px sans-serif'; x.fillText('中医体质自测 · 依据 ' + S.standard, px, y);
-  y += 110;
-  x.fillStyle = '#1f3d33'; x.font = '800 96px sans-serif';
-  x.fillText(last.level === '未达判定线' ? '暂未判定' : main.name, px, y);
-  y += 80;
-  x.fillStyle = '#b4552d'; x.font = '700 44px sans-serif';
-  x.fillText(`转化分 ${sc[main.key].conv}`, px, y);
+  x.fillStyle = '#05070a'; x.fillRect(0, 0, W, H);                       // 石墨底
+  glow(x, 180, 120, 720, 'rgba(48,209,88,.34)');                          // 环境光
+  glow(x, W - 140, H - 60, 780, 'rgba(10,132,255,.30)');
+  const P = 56, pw = W - P * 2;                                           // 玻璃面板
+  x.fillStyle = 'rgba(255,255,255,.055)'; rr(x, P, P, pw, H - P * 2, 46); x.fill();
+  x.strokeStyle = 'rgba(255,255,255,.14)'; x.lineWidth = 2; rr(x, P, P, pw, H - P * 2, 46); x.stroke();
 
-  y += 90;
-  const top = S.dims.filter(d => d.key !== S.pingheKey)
+  const px = P + 62; let y = P + 108;
+  x.textBaseline = 'alphabetic'; x.fillStyle = 'rgba(245,245,247,.6)'; x.font = `600 28px ${FONT}`;
+  x.fillText('中医体质自测 · 依据 ' + S.standard, px, y);
+
+  y += 108;
+  x.font = `800 86px ${FONT}`;
+  const name = pending ? '暂未判定' : main.name;
+  const g = x.createLinearGradient(px, y - 70, px + 470, y + 10);
+  g.addColorStop(0, '#30d158'); g.addColorStop(.55, '#5ad1e8'); g.addColorStop(1, '#0a84ff');
+  x.fillStyle = g; x.fillText(name, px, y);
+
+  y += 62;
+  x.fillStyle = 'rgba(245,245,247,.62)'; x.font = `600 30px ${FONT}`;
+  x.fillText(pending ? `最高一项 ${main.name}` : `判定结果：${level} · 原始分 ${sc[main.key].raw}/${sc[main.key].n}`, px, y);
+
+  // 转化分圆环
+  y += 76;
+  const cx = px + 92, cy = y + 92, r = 78;
+  x.lineCap = 'round'; x.lineWidth = 20;
+  x.strokeStyle = 'rgba(255,255,255,.12)'; x.beginPath(); x.arc(cx, cy, r, 0, Math.PI * 2); x.stroke();
+  const arc = x.createLinearGradient(cx - r, cy - r, cx + r, cy + r);
+  arc.addColorStop(0, '#30d158'); arc.addColorStop(.55, '#5ad1e8'); arc.addColorStop(1, '#0a84ff');
+  x.strokeStyle = arc; x.beginPath();
+  x.arc(cx, cy, r, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * Math.min(100, conv) / 100); x.stroke();
+  x.textAlign = 'center'; x.fillStyle = '#f5f5f7'; x.font = `800 58px ${FONT}`;
+  x.fillText(String(conv), cx, cy + 12);
+  x.fillStyle = 'rgba(245,245,247,.55)'; x.font = `500 22px ${FONT}`; x.fillText('转化分', cx, cy + 46);
+  x.textAlign = 'left';
+
+  // 右侧特征描述
+  x.fillStyle = 'rgba(245,245,247,.78)'; x.font = `400 30px ${FONT}`;
+  const fy = wrapText(x, pending ? '各项转化分都未达到判定线，可过段时间复测；确有不适请由执业医师四诊合参判断。' : main.feature,
+                      cx + r + 56, cy - r + 34, W - P - 62 - (cx + r + 56), 44);
+
+  // 偏颇体质条
+  let by = Math.max(cy + r + 74, fy + 34);
+  x.fillStyle = 'rgba(245,245,247,.45)'; x.font = `600 26px ${FONT}`;
+  x.fillText('其余各项转化分', px, by);
+  by += 34;
+  const top = S.dims.filter(d => d.key !== main.key)
     .map(d => ({ d, c: sc[d.key].conv })).sort((a, b) => b.c - a.c).slice(0, 4);
-  x.font = '600 34px sans-serif';
+  const barX = px + 220, barW = pw - 220 - 190, barH = 20;
   top.forEach(({ d, c }) => {
-    x.fillStyle = '#6b6f63'; x.fillText(d.name, px, y + 24);
-    x.fillStyle = '#e6dfd0'; x.fillRect(px + 260, y, 560, 30);
-    x.fillStyle = c >= 40 ? '#b4552d' : c >= 30 ? '#c07a1e' : '#3a7d5d';
-    x.fillRect(px + 260, y, Math.max(8, 560 * Math.min(100, c) / 100), 30);
-    x.fillStyle = '#22251f'; x.fillText(c + '', px + 850, y + 24);
-    y += 62;
+    const t = by + 6;
+    x.fillStyle = 'rgba(245,245,247,.82)'; x.font = `500 30px ${FONT}`; x.fillText(d.name, px, t + 22);
+    x.fillStyle = 'rgba(255,255,255,.1)'; rr(x, barX, t, barW, barH, barH / 2); x.fill();
+    const f = x.createLinearGradient(barX, 0, barX + barW, 0);
+    if (d.key === S.pingheKey) { f.addColorStop(0, '#30d158'); f.addColorStop(1, '#0a84ff'); }   // 平和质分高是好事，不用警示色
+    else if (c >= 40) { f.addColorStop(0, '#ff9f0a'); f.addColorStop(1, '#ff375f'); }
+    else if (c >= 30) { f.addColorStop(0, '#30d158'); f.addColorStop(1, '#ff9f0a'); }
+    else { f.addColorStop(0, '#0a84ff'); f.addColorStop(1, '#5ad1e8'); }
+    x.fillStyle = f; rr(x, barX, t, Math.max(barH, barW * Math.min(100, c) / 100), barH, barH / 2); x.fill();
+    x.fillStyle = '#f5f5f7'; x.font = `700 30px ${FONT}`; x.textAlign = 'right';
+    x.fillText(String(c), W - P - 62, t + 22); x.textAlign = 'left';
+    by += 62;
   });
 
-  y += 40;
-  x.fillStyle = '#6a5a3c'; x.font = '500 30px sans-serif';
-  wrapText(x, '仅供健康参考，不构成医疗诊断，请咨询执业医师。', px, y, W - px * 2, 44);
-  y += 100;
-  x.fillStyle = '#1f3d33'; x.font = '700 40px sans-serif';
-  x.fillText(S.brand || '@我的小红书', px, y);
-  x.fillStyle = '#8b8f80'; x.font = '400 28px sans-serif';
-  x.fillText(S.slogan || '评论区扣「测」，发你测一遍', px, y + 50);
+  // 免责声明条 + 署名 + 二维码占位（三者不重叠：二维码靠右，文字靠左）
+  const dy = H - P - 300;
+  const qs = 168, qx = W - P - 62 - qs, qy = dy;   // shortcut: 二维码只是占位框，要放真图就把这个虚线框换成 drawImage
+  x.fillStyle = 'rgba(255,159,10,.14)'; rr(x, px, dy, qx - 26 - px, 92, 20); x.fill();
+  x.fillStyle = '#ffd48a'; x.font = `500 25px ${FONT}`;
+  x.fillText('仅供健康参考，不构成医疗诊断，请咨询执业医师。', px + 24, dy + 56);
 
-  x.fillStyle = '#e6dfd0'; x.fillRect(W - px - 200, H - 60 - 40 - 200, 200, 200);
-  x.fillStyle = '#9a9c8f'; x.font = '400 24px sans-serif';
-  x.fillText('放二维码', W - px - 160, H - 60 - 40 - 90);
+  x.fillStyle = '#f5f5f7'; x.font = `700 40px ${FONT}`;
+  x.fillText(S.brand || '', px, dy + 168);
+  x.fillStyle = 'rgba(245,245,247,.55)'; x.font = `400 27px ${FONT}`;
+  x.fillText(S.slogan || '', px, dy + 212);
+
+  x.setLineDash([8, 8]); x.strokeStyle = 'rgba(255,255,255,.26)'; x.lineWidth = 2;
+  rr(x, qx, qy, qs, qs, 22); x.stroke(); x.setLineDash([]);
+  x.fillStyle = 'rgba(245,245,247,.45)'; x.font = `400 22px ${FONT}`; x.textAlign = 'center';
+  x.fillText('放二维码', qx + qs / 2, qy + qs / 2 + 8); x.textAlign = 'left';
 
   const url = cv.toDataURL('image/png');
   $('shareImg').src = url;
   const a = document.createElement('a');
   a.href = url; a.download = '我的中医体质卡片.png';
+  $('shSave').style.display = 'block';   // 桌面端没有长按保存，给个下载按钮
   $('shSave').onclick = () => a.click();
 }
-function roundRect(x, a, b, w, h, r) { x.beginPath(); x.moveTo(a + r, b); x.arcTo(a + w, b, a + w, b + h, r); x.arcTo(a + w, b + h, a, b + h, r); x.arcTo(a, b + h, a, b, r); x.arcTo(a, b, a + w, b, r); x.closePath(); }
-function wrapText(x, t, a, b, w, lh) { let line = '', yy = b; for (const ch of t) { if (x.measureText(line + ch).width > w) { x.fillText(line, a, yy); line = ch; yy += lh; } else line += ch; } x.fillText(line, a, yy); }
+function glow(x, cx, cy, r, color) {
+  const g = x.createRadialGradient(cx, cy, 0, cx, cy, r);
+  g.addColorStop(0, color); g.addColorStop(1, 'rgba(0,0,0,0)');
+  x.fillStyle = g; x.fillRect(0, 0, 1080, 1440);
+}
+function rr(x, a, b, w, h, r) { x.beginPath(); x.moveTo(a + r, b); x.arcTo(a + w, b, a + w, b + h, r); x.arcTo(a + w, b + h, a, b + h, r); x.arcTo(a, b + h, a, b, r); x.arcTo(a, b, a + w, b, r); x.closePath(); }
+function wrapText(x, t, a, b, w, lh) { let line = '', yy = b; for (const ch of t) { if (x.measureText(line + ch).width > w) { x.fillText(line, a, yy); line = ch; yy += lh; } else line += ch; } x.fillText(line, a, yy); return yy; }
 
 /* ---------- 路由 ---------- */
-$('sexRow').querySelectorAll('.opt').forEach(b => b.onclick = () => {
+$('sexRow').querySelectorAll('.seg-i').forEach(b => b.onclick = () => {
   state.sex = b.dataset.sex; state.i = 0; save(); renderHome();
 });
 $('goStart').onclick = () => { if (!state.sex) return; state.i = 0; state.answers = {}; save(); show('s-quiz'); renderQ(); };
@@ -448,7 +613,7 @@ $('qNext').onclick = () => {
   if (!answeredAll()) { jumpToFirstUnanswered(); return; }
   finish();
 };
-$('rAgain').onclick = () => { state.answers = {}; state.i = 0; save(); renderHome(); show('s-home'); };
+$('rAgain').onclick = () => { state.answers = {}; state.i = 0; $('rRing').style.strokeDashoffset = 264; save(); renderHome(); show('s-home'); };
 $('rAll').onclick = () => { renderGloss(); show('s-gloss'); };
 $('glBack').onclick = () => show('s-result');
 $('rShare').onclick = () => { drawCard(); $('mShare').classList.add('on'); };
