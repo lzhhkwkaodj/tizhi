@@ -7,23 +7,23 @@
 <meta name="description" content="依据《中医体质分类与判定》标准量表自测你的中医体质：9 种体质、自动计分、给出养生调理方向。仅供健康参考，不构成医疗诊断。">
 <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f2f2f7">
 <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000000">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%2332d77b'/><text y='.78em' x='50%' text-anchor='middle' font-size='62'>🌿</text></svg>">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%233f6f61'/><text y='.78em' x='50%' text-anchor='middle' font-size='62'>🌿</text></svg>">
 <style>
 :root{
   color-scheme: light dark;
-  --bg:#f2f2f7; --card:#ffffff;
-  --ink:#1c1c1e; --ink2:#2c2c2e; --muted:#8a8a8f; --sep:rgba(60,60,67,.12);
-  --fill2:rgba(120,120,128,.16);
-  --jade:#2fd07a; --teal:#25a5c9; --blue:#007aff; --amber:#ff9500; --red:#ff3b30;
-  --grad:linear-gradient(120deg,var(--jade),var(--teal) 55%,var(--blue));
+  --bg:#f6f6f5; --card:#ffffff;
+  --ink:#1d1d1f; --ink2:#4b4b50; --muted:#8b8b90; --sep:rgba(0,0,0,.07);
+  --fill2:rgba(120,120,128,.10);
+  --accent:#3f6f61; --accent-ink:#ffffff; --tint:rgba(63,111,97,.10); --line-accent:rgba(63,111,97,.28);
   --r:22px; --r-sm:14px;
-  --sh:0 1px 2px rgba(0,0,0,.04), 0 10px 30px rgba(0,0,0,.055);
+  --sh:0 1px 2px rgba(0,0,0,.03), 0 6px 20px rgba(0,0,0,.04);
   --spring:cubic-bezier(.32,.72,0,1);
 }
 @media (prefers-color-scheme:dark){
-  :root{ --bg:#000; --card:#1c1c1e; --ink:#f5f5f7; --ink2:#d8d8dc; --muted:#8e8e93;
-    --sep:rgba(84,84,88,.55); --fill2:rgba(120,120,128,.24);
-    --blue:#0a84ff; --jade:#30d158; --sh:0 1px 2px rgba(0,0,0,.6), 0 14px 34px rgba(0,0,0,.55); }
+  :root{ --bg:#000; --card:#1a1a1c; --ink:#f5f5f7; --ink2:#c7c7cc; --muted:#8e8e93;
+    --sep:rgba(255,255,255,.08); --fill2:rgba(120,120,128,.20);
+    --accent:#8fbfae; --accent-ink:#0b1512; --tint:rgba(143,191,174,.14); --line-accent:rgba(143,191,174,.30);
+    --sh:0 1px 2px rgba(0,0,0,.5), 0 10px 28px rgba(0,0,0,.5); }
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;padding:0}
@@ -32,11 +32,9 @@ body{
   font:17px/1.5 -apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
   -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
 }
-body::before{ /* 顶部环境光，iOS 壁纸感 */
-  content:""; position:fixed; inset:0 0 auto; height:460px; z-index:0; pointer-events:none;
-  background:
-    radial-gradient(58% 44% at 16% 2%, rgba(47,208,122,.26), transparent 62%),
-    radial-gradient(52% 40% at 86% 8%, rgba(0,122,255,.22), transparent 64%);
+body::before{ /* 极淡的一层冷暖过渡，避免纯灰底发闷 */
+  content:""; position:fixed; inset:0 0 auto; height:420px; z-index:0; pointer-events:none;
+  background:linear-gradient(180deg, rgba(63,111,97,.05), transparent 78%);
 }
 .wrap{position:relative;z-index:1;max-width:560px;margin:0 auto;padding:calc(14px + env(safe-area-inset-top)) 18px calc(34px + env(safe-area-inset-bottom))}
 h1,h2,h3{margin:0;font-weight:700;letter-spacing:-.02em}
@@ -57,19 +55,19 @@ h1,h2,h3{margin:0;font-weight:700;letter-spacing:-.02em}
 .eyebrow{display:inline-flex;align-items:center;gap:6px;padding:6px 13px;border-radius:999px;
   font-size:12.5px;font-weight:600;letter-spacing:.02em;color:var(--ink2);
   background:var(--fill2);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px)}
-.eyebrow i{width:7px;height:7px;border-radius:50%;background:var(--jade);box-shadow:0 0 0 3px rgba(47,208,122,.2)}
-.title{font-size:36px;line-height:1.14;letter-spacing:-.03em;font-weight:800;margin:16px 0 10px}
-.title em{font-style:normal;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.eyebrow i{width:6px;height:6px;border-radius:50%;background:var(--accent);opacity:.7}
+.title{font-size:36px;line-height:1.16;letter-spacing:-.03em;font-weight:700;margin:16px 0 10px}
+.title em{font-style:normal;color:var(--accent)}
 .lede{margin:0;font-size:16px;color:var(--muted);line-height:1.6}
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
-.chips span{padding:7px 12px;border-radius:12px;font-size:13px;font-weight:600;color:var(--ink2);
-  background:var(--card);box-shadow:var(--sh)}
+.chips span{padding:7px 12px;border-radius:11px;font-size:13px;font-weight:500;color:var(--ink2);
+  border:1px solid var(--sep)}
 ul.tips{margin:0;padding:0;list-style:none;counter-reset:t}
-ul.tips li{counter-increment:t;position:relative;padding:11px 0 11px 30px;font-size:15px;color:var(--ink2);
+ul.tips li{counter-increment:t;position:relative;padding:12px 0 12px 26px;font-size:15px;color:var(--ink2);
   border-bottom:1px solid var(--sep)}
 ul.tips li:last-child{border-bottom:0;padding-bottom:2px}
-ul.tips li:before{content:counter(t);position:absolute;left:0;top:12px;width:21px;height:21px;border-radius:50%;
-  display:grid;place-items:center;font-size:11px;font-weight:700;color:#fff;background:var(--grad)}
+ul.tips li:before{content:counter(t);position:absolute;left:0;top:12px;font-size:12px;font-weight:600;
+  color:var(--muted);font-variant-numeric:tabular-nums}
 
 /* ---------- 按钮 ---------- */
 .btn{display:block;width:100%;border:0;border-radius:16px;padding:17px;font-size:17px;font-weight:600;
@@ -96,21 +94,21 @@ ul.tips li:before{content:counter(t);position:absolute;left:0;top:12px;width:21p
   border-bottom:1px solid var(--sep)}
 @supports not (background:color-mix(in srgb,red 50%,transparent)){.topbar{background:var(--bg)}}
 .prow{display:flex;justify-content:space-between;align-items:baseline;font-size:13px;color:var(--muted);margin-bottom:9px}
-.prow b{font-size:15px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
-.bar{height:4px;border-radius:99px;background:var(--fill2);overflow:hidden}
-.bar i{display:block;height:100%;border-radius:99px;background:var(--grad);width:0;
+.prow b{font-size:15px;font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.bar{height:2px;border-radius:99px;background:var(--fill2);overflow:hidden}
+.bar i{display:block;height:100%;border-radius:99px;background:var(--accent);opacity:.85;width:0;
   transition:width .45s var(--spring)}
 .qbody{animation:qin .38s var(--spring) both}
 @keyframes qin{from{opacity:0;transform:translateX(22px)}to{opacity:1;transform:none}}
-.qnum{font-size:12px;font-weight:700;letter-spacing:.16em;color:var(--muted)}
-.qtext{font-size:25px;line-height:1.4;font-weight:700;letter-spacing:-.02em;margin:10px 0 22px;min-height:70px}
+.qnum{font-size:12px;font-weight:600;letter-spacing:.18em;color:var(--muted)}
+.qtext{font-size:26px;line-height:1.42;font-weight:600;letter-spacing:-.025em;margin:10px 0 24px;min-height:74px}
 .opt{display:flex;justify-content:space-between;align-items:center;width:100%;border:0;background:none;
-  padding:17px 20px;font:inherit;font-size:17px;font-weight:600;letter-spacing:-.01em;color:var(--ink);
+  padding:18px 20px;font:inherit;font-size:17px;font-weight:500;letter-spacing:-.01em;color:var(--ink);
   text-align:left;cursor:pointer;transition:background .18s,transform .18s var(--spring)}
 .opt:active{transform:scale(.985);background:var(--fill2)}
-.opt small{font-weight:500;color:var(--muted);font-size:13px;font-variant-numeric:tabular-nums}
-.opt .tick{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;flex:0 0 auto;
-  background:var(--grad);color:#fff;font-size:13px;font-weight:800;
+.opt small{font-weight:400;color:var(--muted);font-size:13px;font-variant-numeric:tabular-nums}
+.opt .tick{width:21px;height:21px;border-radius:50%;display:grid;place-items:center;flex:0 0 auto;
+  background:var(--accent);color:var(--accent-ink);font-size:12px;font-weight:700;
   opacity:0;transform:scale(.4);transition:.3s var(--spring)}
 .opt.sel .tick{opacity:1;transform:scale(1)}
 .opt.sel small{opacity:0}
@@ -118,45 +116,60 @@ ul.tips li:before{content:counter(t);position:absolute;left:0;top:12px;width:21p
 .nav .btn{flex:1;padding:15px;font-size:16px}
 
 /* ---------- 结果 ---------- */
-.rhero{display:grid;grid-template-columns:96px 1fr;gap:18px;align-items:center}
-.ringwrap{position:relative;width:96px;height:96px}
-.ringwrap b{position:absolute;inset:0;display:grid;place-items:center;align-content:center;gap:0;
-  font-size:26px;font-weight:800;letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums}
-.ringwrap b:after{content:'转化分';font-size:10px;font-weight:600;letter-spacing:.02em;color:var(--muted);margin-top:3px}
-.ring{width:96px;height:96px;transform:rotate(-90deg)}
-.ring circle{fill:none;stroke-width:9;stroke-linecap:round}
+.rhero{display:grid;grid-template-columns:88px 1fr;gap:20px;align-items:center}
+.ringwrap{position:relative;width:88px;height:88px}
+.ringwrap b{position:absolute;inset:0;display:grid;place-items:center;align-content:center;
+  font-size:25px;font-weight:600;letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums}
+.ringwrap b:after{content:'转化分';font-size:10px;font-weight:500;letter-spacing:.04em;color:var(--muted);margin-top:4px}
+.ring{width:88px;height:88px;transform:rotate(-90deg)}
+.ring circle{fill:none;stroke-width:7;stroke-linecap:round}
 .ring .t{stroke:var(--fill2)}
-.ring .v{stroke:url(#rg);stroke-dasharray:264;stroke-dashoffset:264;transition:stroke-dashoffset 1s var(--spring) .1s}
-.badge{display:inline-flex;align-items:center;padding:5px 11px;border-radius:999px;font-size:12.5px;font-weight:600;
-  background:rgba(47,208,122,.18);color:#1a7f4b}
-@media (prefers-color-scheme:dark){.badge{color:#5ff09a}}
-.rh .big{font-size:32px;font-weight:800;line-height:1.15;letter-spacing:-.03em;margin:9px 0 5px}
-.rh .sub{font-size:14px;color:var(--muted);letter-spacing:-.01em}
+.ring .v{stroke:var(--accent);stroke-dasharray:264;stroke-dashoffset:264;transition:stroke-dashoffset 1s var(--spring) .1s}
+.badge{display:inline-flex;align-items:center;padding:4px 10px;border-radius:999px;font-size:12px;font-weight:600;
+  letter-spacing:.02em;background:var(--tint);color:var(--accent)}
+.rh .big{font-size:32px;font-weight:700;line-height:1.18;letter-spacing:-.035em;margin:10px 0 5px}
+.rh .sub{font-size:14px;color:var(--muted);letter-spacing:-.01em;font-weight:400}
 .pills{display:flex;flex-wrap:wrap;gap:7px;margin:2px 0}
-.pill{border-radius:11px;padding:6px 11px;font-size:13px;font-weight:600;color:var(--ink2);
-  background:var(--fill2);font-variant-numeric:tabular-nums}
-.pill.on{background:var(--grad);color:#fff}
+.pill{border-radius:10px;padding:6px 11px;font-size:13px;font-weight:500;color:var(--ink2);
+  border:1px solid var(--sep);background:transparent;font-variant-numeric:tabular-nums}
+.pill.on{color:var(--accent);border-color:var(--line-accent);background:var(--tint);font-weight:600}
 .scorebar{margin:15px 0}
 .scorebar .lab{display:flex;justify-content:space-between;align-items:baseline;font-size:15px;margin-bottom:7px}
-.scorebar .lab b{font-weight:600}
+.scorebar .lab b{font-weight:500}
 .scorebar .lab em{font-style:normal;font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
-.scorebar .track{height:7px;background:var(--fill2);border-radius:99px;overflow:hidden}
-.scorebar .track i{display:block;height:100%;border-radius:99px;background:var(--muted);opacity:.5;width:0;
+.scorebar .track{height:6px;background:var(--fill2);border-radius:99px;overflow:hidden}
+.scorebar .track i{display:block;height:100%;border-radius:99px;background:var(--muted);opacity:.35;width:0;
   transition:width .8s var(--spring)}
-.scorebar.hi .track i{background:linear-gradient(90deg,var(--amber),var(--red));opacity:1}
-.scorebar.mid .track i{background:linear-gradient(90deg,var(--jade),var(--amber));opacity:1}
-.scorebar.ping .track i{background:var(--grad);opacity:1}
+.scorebar.hi .track i{background:var(--accent);opacity:1}
+.scorebar.mid .track i{background:var(--accent);opacity:.55}
+.scorebar.ping .track i{background:var(--ink2);opacity:.45}
 .adv{margin:0;padding:0;list-style:none}
 .adv li{padding:15px 0;border-bottom:1px solid var(--sep)}
 .adv li:first-child{padding-top:2px}
 .adv li:last-child{border:0;padding-bottom:2px}
-.adv h4{margin:0 0 5px;font-size:15px;letter-spacing:-.01em;display:flex;gap:9px;align-items:baseline}
-.adv h4 span{font-size:11px;font-weight:600;letter-spacing:.06em;color:var(--jade)}
-.adv p{margin:0;font-size:15px;line-height:1.65;color:var(--ink2)}
-.disc{border-radius:var(--r);padding:17px 19px;font-size:14px;line-height:1.75;color:var(--ink2);
-  background:rgba(255,149,0,.13);border:1px solid rgba(255,149,0,.28)}
-.disc b{display:block;color:#8a5a00;font-size:14px;margin-bottom:4px;letter-spacing:.02em}
-@media (prefers-color-scheme:dark){.disc{color:#e6d6bd}.disc b{color:#ffd48a}}
+.adv h4{margin:0 0 6px;font-size:15px;font-weight:600;letter-spacing:-.01em;display:flex;gap:9px;align-items:baseline}
+.adv h4 span{font-size:11px;font-weight:500;letter-spacing:.06em;color:var(--muted)}
+.adv p{margin:0;font-size:15px;line-height:1.7;color:var(--ink2)}
+/* ---------- 穴位对照 ---------- */
+.acu{margin-top:14px;display:grid;gap:12px}
+.acub{border:1px solid var(--sep);border-radius:var(--r-sm);padding:12px 12px 4px;
+  display:grid;grid-template-columns:132px minmax(0,1fr);gap:10px;align-items:start}
+.acub h5{grid-column:1/-1;margin:0 0 2px;font-size:12px;font-weight:600;letter-spacing:.04em;color:var(--muted)}
+.acub svg{width:100%;height:auto;display:block}
+.acub .body{fill:var(--fill2);stroke:var(--sep);stroke-width:1.4}
+.acub .mk{stroke:var(--sep);stroke-width:1.2;stroke-dasharray:4 4}
+.acub .mkt{fill:var(--muted);font-size:12px;font-weight:500}
+.acub .dot{fill:var(--accent);stroke:var(--card);stroke-width:2}
+.acub .dot2{fill:var(--accent);opacity:.3;stroke:var(--card);stroke-width:2}
+.acub .nm{fill:var(--ink);font-size:14px;font-weight:600}
+.acul{list-style:none;margin:0;padding:0;display:grid;gap:9px}
+.acul li{border:0;padding:0}
+.acul b{font-size:14.5px;font-weight:600;letter-spacing:-.01em}
+.acul i{font-style:normal;font-size:11px;font-weight:500;color:var(--muted);margin-left:6px;letter-spacing:.04em}
+.acul p{margin:2px 0 0;font-size:13.5px;line-height:1.65;color:var(--ink2)}
+.disc{border-radius:var(--r);padding:17px 19px;font-size:13.5px;line-height:1.8;color:var(--muted);
+  background:transparent;border:1px solid var(--sep)}
+.disc b{display:block;color:var(--ink2);font-size:13px;font-weight:600;margin-bottom:5px;letter-spacing:.02em}
 
 /* ---------- 底部抽屉 ---------- */
 .mask{position:fixed;inset:0;z-index:40;display:flex;align-items:flex-end;justify-content:center;
@@ -246,9 +259,6 @@ canvas{display:none}
       <div class="rhero">
         <div class="ringwrap">
           <svg class="ring" viewBox="0 0 100 100" aria-hidden="true">
-            <defs><linearGradient id="rg" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0" stop-color="#2fd07a"/><stop offset=".55" stop-color="#25a5c9"/><stop offset="1" stop-color="#007aff"/>
-            </linearGradient></defs>
             <circle class="t" cx="50" cy="50" r="42"/><circle class="v" id="rRing" cx="50" cy="50" r="42"/>
           </svg>
           <b id="rRingNum">—</b>
@@ -308,9 +318,11 @@ canvas{display:none}
 <canvas id="cv" width="1080" height="1440"></canvas>
 <script src="data.js"></script>
 <script src="advice.js"></script>
+<script src="acu.js"></script>
 <script>
 const S = window.CCMQ;                 // 国标数据：条目 / 量表 / 公式 / 阈值 / 特征
 const A = window.CCMQAdvice || {};     // T/CACM 1460-2023 摘录：调体原则 + 非药物调理五维度
+const Q = window.CCMQAcu || { groups: {}, pts: {} };
 const LS = 'ccmq.v2';
 const state = { i: 0, answers: {}, sex: '' };
 
@@ -473,7 +485,7 @@ function finish() {
   $('rAdvTitle').textContent = pending ? '未达判定线 · 可先参考平和质的日常保养' : main.name + ' · 养生调理方向';
   $('rAdv').innerHTML =
     (target.principle ? `<li><h4>调体原则<span>治未病干预指南</span></h4><p>${target.principle}</p></li>` : '') +
-    (target.advice || []).map(a => `<li><h4>${a.t}<span>${a.k}</span></h4><p>${a.d}</p></li>`).join('') +
+    (target.advice || []).map(a => `<li><h4>${a.t}<span>${a.k}</span></h4><p>${a.d}</p>${a.t === '穴位保健' ? acuHtml(a.d) : ''}</li>`).join('') +
     (last.兼夹.length ? `<li><h4>兼夹<span>${last.兼夹.map(d => d.name).join('、')}</span></h4><p>${A.jianjia || ''}</p></li>` : '') +
     `<li><p class="note">${S.adviceSource}</p></li>`;
 
@@ -484,6 +496,33 @@ function finish() {
 
   show('s-result');
   window.scrollTo(0, 0);
+}
+
+/* ---------- 穴位对照图（按部位分组，点位按骨度分寸换算） ---------- */
+function acuHtml(text) {
+  const names = Object.keys(Q.pts).filter(n => (text || '').includes(n));
+  if (!names.length) return '';
+  const byGroup = {};
+  names.forEach(n => { const g = Q.pts[n].g; (byGroup[g] = byGroup[g] || []).push(n); });
+  const fig = (gid, ns) => {
+    const g = Q.groups[gid], [w, h] = g.vb;
+    const marks = g.marks.map(([y, t]) =>
+      `<line class="mk" x1="16" y1="${y}" x2="${w - 16}" y2="${y}"/><text class="mkt" x="16" y="${y - 5}">${t}</text>`).join('');
+    const dots = ns.map(n => {
+      const p = Q.pts[n], xs = p.side && g.mid ? [g.mid - p.x, g.mid + p.x] : [p.x];
+      return xs.map((cx, i) =>
+        `<circle class="${i ? 'dot2' : 'dot'}" cx="${cx}" cy="${p.y}" r="6"/>` +
+        (i ? '' : `<text class="nm" x="${cx + 11}" y="${p.y + 5}">${n}</text>`)).join('');
+    }).join('');
+    return `<div class="acub"><h5>${g.name}</h5>
+      <svg viewBox="0 0 ${w} ${h}" role="img" aria-label="${g.name}示意图"><path class="body" d="${g.body}"/>${marks}${dots}</svg>
+      <ul class="acul">${ns.map(n => { const p = Q.pts[n];
+        return `<li><b>${n}</b><i>${p.code}</i><p>${p.loc}</p></li>`; }).join('')}</ul></div>`;
+  };
+  const need = Q.need.filter(n => names.includes(n));
+  return `<div class="acu">${Object.keys(byGroup).map(gid => fig(gid, byGroup[gid])).join('')}
+    <p class="note" style="margin:2px 0 0">${Q.note} ${Q.source}。${
+      need.length ? '其中 ' + need.join('、') + ' 的定位文字为单一来源转引，建议再与标准原文核对。' : ''}</p></div>`;
 }
 
 /* ---------- 九种体质详解 ---------- */
@@ -506,85 +545,81 @@ function drawCard() {
   const pending = level === '未达判定线';
   const conv = sc[main.key].conv;
 
-  x.fillStyle = '#05070a'; x.fillRect(0, 0, W, H);                       // 石墨底
-  glow(x, 180, 120, 720, 'rgba(48,209,88,.34)');                          // 环境光
-  glow(x, W - 140, H - 60, 780, 'rgba(10,132,255,.30)');
-  const P = 56, pw = W - P * 2;                                           // 玻璃面板
-  x.fillStyle = 'rgba(255,255,255,.055)'; rr(x, P, P, pw, H - P * 2, 46); x.fill();
-  x.strokeStyle = 'rgba(255,255,255,.14)'; x.lineWidth = 2; rr(x, P, P, pw, H - P * 2, 46); x.stroke();
+  const INK = '#1d1d1f', INK2 = '#4b4b50', MUTED = '#8b8b90',
+        PAPER = '#f7f6f3', PANEL = '#ffffff', HAIR = '#e6e4df',
+        ACCENT = '#3f6f61', FILL = '#efedea';
+  x.fillStyle = PAPER; x.fillRect(0, 0, W, H);                            // 纸白底
+  const P = 56, pw = W - P * 2;                                            // 白面板
+  x.fillStyle = PANEL; rr(x, P, P, pw, H - P * 2, 40); x.fill();
+  x.strokeStyle = HAIR; x.lineWidth = 2; rr(x, P, P, pw, H - P * 2, 40); x.stroke();
 
   const px = P + 62; let y = P + 108;
-  x.textBaseline = 'alphabetic'; x.fillStyle = 'rgba(245,245,247,.6)'; x.font = `600 28px ${FONT}`;
+  x.textBaseline = 'alphabetic'; x.fillStyle = MUTED; x.font = `500 27px ${FONT}`;
   x.fillText('中医体质自测 · 依据 ' + S.standard, px, y);
 
-  y += 108;
-  x.font = `800 86px ${FONT}`;
+  y += 110;
+  x.fillStyle = INK; x.font = `700 86px ${FONT}`;
   const name = pending ? '暂未判定' : main.name;
-  const g = x.createLinearGradient(px, y - 70, px + 470, y + 10);
-  g.addColorStop(0, '#30d158'); g.addColorStop(.55, '#5ad1e8'); g.addColorStop(1, '#0a84ff');
-  x.fillStyle = g; x.fillText(name, px, y);
+  x.fillText(name, px, y);
 
-  y += 62;
-  x.fillStyle = 'rgba(245,245,247,.62)'; x.font = `600 30px ${FONT}`;
+  y += 8; x.strokeStyle = HAIR; x.lineWidth = 1.5;
+  x.beginPath(); x.moveTo(px, y); x.lineTo(W - P - 62, y); x.stroke();      // 分隔线
+
+  y += 60;
+  x.fillStyle = INK2; x.font = `500 30px ${FONT}`;
   x.fillText(pending ? `最高一项 ${main.name}` : `判定结果：${level} · 原始分 ${sc[main.key].raw}/${sc[main.key].n}`, px, y);
 
   // 转化分圆环
-  y += 76;
-  const cx = px + 92, cy = y + 92, r = 78;
-  x.lineCap = 'round'; x.lineWidth = 20;
-  x.strokeStyle = 'rgba(255,255,255,.12)'; x.beginPath(); x.arc(cx, cy, r, 0, Math.PI * 2); x.stroke();
-  const arc = x.createLinearGradient(cx - r, cy - r, cx + r, cy + r);
-  arc.addColorStop(0, '#30d158'); arc.addColorStop(.55, '#5ad1e8'); arc.addColorStop(1, '#0a84ff');
-  x.strokeStyle = arc; x.beginPath();
+  y += 56;
+  const cx = px + 88, cy = y + 88, r = 74;
+  x.lineCap = 'round'; x.lineWidth = 13;
+  x.strokeStyle = FILL; x.beginPath(); x.arc(cx, cy, r, 0, Math.PI * 2); x.stroke();
+  x.strokeStyle = ACCENT; x.beginPath();
   x.arc(cx, cy, r, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * Math.min(100, conv) / 100); x.stroke();
-  x.textAlign = 'center'; x.fillStyle = '#f5f5f7'; x.font = `800 58px ${FONT}`;
-  x.fillText(String(conv), cx, cy + 12);
-  x.fillStyle = 'rgba(245,245,247,.55)'; x.font = `500 22px ${FONT}`; x.fillText('转化分', cx, cy + 46);
+  x.textAlign = 'center'; x.fillStyle = INK; x.font = `700 52px ${FONT}`;
+  x.fillText(String(conv), cx, cy + 10);
+  x.fillStyle = MUTED; x.font = `400 21px ${FONT}`; x.fillText('转化分', cx, cy + 42);
   x.textAlign = 'left';
 
   // 右侧特征描述
-  x.fillStyle = 'rgba(245,245,247,.78)'; x.font = `400 30px ${FONT}`;
+  x.fillStyle = INK2; x.font = `400 29px ${FONT}`;
   const fy = wrapText(x, pending ? '各项转化分都未达到判定线，可过段时间复测；确有不适请由执业医师四诊合参判断。' : main.feature,
-                      cx + r + 56, cy - r + 34, W - P - 62 - (cx + r + 56), 44);
+                      cx + r + 54, cy - r + 32, W - P - 62 - (cx + r + 54), 43);
 
-  // 偏颇体质条
-  let by = Math.max(cy + r + 74, fy + 34);
-  x.fillStyle = 'rgba(245,245,247,.45)'; x.font = `600 26px ${FONT}`;
+  // 其余各项转化分
+  let by = Math.max(cy + r + 62, fy + 30);
+  x.fillStyle = MUTED; x.font = `500 25px ${FONT}`;
   x.fillText('其余各项转化分', px, by);
-  by += 34;
-  const top = S.dims.filter(d => d.key !== main.key)
-    .map(d => ({ d, c: sc[d.key].conv })).sort((a, b) => b.c - a.c).slice(0, 4);
-  const barX = px + 220, barW = pw - 220 - 190, barH = 20;
-  top.forEach(({ d, c }) => {
-    const t = by + 6;
-    x.fillStyle = 'rgba(245,245,247,.82)'; x.font = `500 30px ${FONT}`; x.fillText(d.name, px, t + 22);
-    x.fillStyle = 'rgba(255,255,255,.1)'; rr(x, barX, t, barW, barH, barH / 2); x.fill();
-    const f = x.createLinearGradient(barX, 0, barX + barW, 0);
-    if (d.key === S.pingheKey) { f.addColorStop(0, '#30d158'); f.addColorStop(1, '#0a84ff'); }   // 平和质分高是好事，不用警示色
-    else if (c >= 40) { f.addColorStop(0, '#ff9f0a'); f.addColorStop(1, '#ff375f'); }
-    else if (c >= 30) { f.addColorStop(0, '#30d158'); f.addColorStop(1, '#ff9f0a'); }
-    else { f.addColorStop(0, '#0a84ff'); f.addColorStop(1, '#5ad1e8'); }
-    x.fillStyle = f; rr(x, barX, t, Math.max(barH, barW * Math.min(100, c) / 100), barH, barH / 2); x.fill();
-    x.fillStyle = '#f5f5f7'; x.font = `700 30px ${FONT}`; x.textAlign = 'right';
-    x.fillText(String(c), W - P - 62, t + 22); x.textAlign = 'left';
-    by += 62;
+  by += 30;
+  const rest = S.dims.filter(d => d.key !== main.key).map(d => ({ d, c: sc[d.key].conv }));
+  const barX = px + 210, barW = pw - 210 - 186, barH = 14;
+  rest.forEach(({ d, c }) => {
+    const t = by + 8;
+    x.fillStyle = INK; x.font = `500 29px ${FONT}`; x.fillText(d.name, px, t + 20);
+    x.fillStyle = FILL; rr(x, barX, t, barW, barH, barH / 2); x.fill();
+    x.globalAlpha = c >= 40 ? 1 : c >= 30 ? .55 : .3;                       // 深浅代替红橙警示
+    x.fillStyle = ACCENT; rr(x, barX, t, Math.max(barH, barW * Math.min(100, c) / 100), barH, barH / 2); x.fill();
+    x.globalAlpha = 1;
+    x.fillStyle = INK; x.font = `600 29px ${FONT}`; x.textAlign = 'right';
+    x.fillText(String(c), W - P - 62, t + 20); x.textAlign = 'left';
+    by += 52;
   });
 
-  // 免责声明条 + 署名 + 二维码占位（三者不重叠：二维码靠右，文字靠左）
-  const dy = H - P - 300;
-  const qs = 168, qx = W - P - 62 - qs, qy = dy;   // shortcut: 二维码只是占位框，要放真图就把这个虚线框换成 drawImage
-  x.fillStyle = 'rgba(255,159,10,.14)'; rr(x, px, dy, qx - 26 - px, 92, 20); x.fill();
-  x.fillStyle = '#ffd48a'; x.font = `500 25px ${FONT}`;
-  x.fillText('仅供健康参考，不构成医疗诊断，请咨询执业医师。', px + 24, dy + 56);
+  // 免责（细框）+ 署名 + 二维码占位
+  const dy = H - P - 290;
+  x.strokeStyle = HAIR; x.lineWidth = 1.5; rr(x, px, dy, pw - 124, 76, 16); x.stroke();
+  x.fillStyle = INK2; x.font = `400 24px ${FONT}`;
+  x.fillText('仅供健康参考，不构成医疗诊断，请咨询执业医师。', px + 26, dy + 47);
 
-  x.fillStyle = '#f5f5f7'; x.font = `700 40px ${FONT}`;
-  x.fillText(S.brand || '', px, dy + 168);
-  x.fillStyle = 'rgba(245,245,247,.55)'; x.font = `400 27px ${FONT}`;
-  x.fillText(S.slogan || '', px, dy + 212);
+  const qs = 168, qx = W - P - 62 - qs, qy = dy + 118;
+  x.fillStyle = INK; x.font = `600 40px ${FONT}`;
+  x.fillText(S.brand || '', px, qy + 40);
+  x.fillStyle = MUTED; x.font = `400 26px ${FONT}`;
+  x.fillText(S.slogan || '', px, qy + 84);
 
-  x.setLineDash([8, 8]); x.strokeStyle = 'rgba(255,255,255,.26)'; x.lineWidth = 2;
-  rr(x, qx, qy, qs, qs, 22); x.stroke(); x.setLineDash([]);
-  x.fillStyle = 'rgba(245,245,247,.45)'; x.font = `400 22px ${FONT}`; x.textAlign = 'center';
+  x.setLineDash([8, 8]); x.strokeStyle = '#cfccc4'; x.lineWidth = 2;
+  rr(x, qx, qy, qs, qs, 18); x.stroke(); x.setLineDash([]);
+  x.fillStyle = MUTED; x.font = `400 22px ${FONT}`; x.textAlign = 'center';
   x.fillText('放二维码', qx + qs / 2, qy + qs / 2 + 8); x.textAlign = 'left';
 
   const url = cv.toDataURL('image/png');
@@ -593,11 +628,6 @@ function drawCard() {
   a.href = url; a.download = '我的中医体质卡片.png';
   $('shSave').style.display = 'block';   // 桌面端没有长按保存，给个下载按钮
   $('shSave').onclick = () => a.click();
-}
-function glow(x, cx, cy, r, color) {
-  const g = x.createRadialGradient(cx, cy, 0, cx, cy, r);
-  g.addColorStop(0, color); g.addColorStop(1, 'rgba(0,0,0,0)');
-  x.fillStyle = g; x.fillRect(0, 0, 1080, 1440);
 }
 function rr(x, a, b, w, h, r) { x.beginPath(); x.moveTo(a + r, b); x.arcTo(a + w, b, a + w, b + h, r); x.arcTo(a + w, b + h, a, b + h, r); x.arcTo(a, b + h, a, b, r); x.arcTo(a, b, a + w, b, r); x.closePath(); }
 function wrapText(x, t, a, b, w, lh) { let line = '', yy = b; for (const ch of t) { if (x.measureText(line + ch).width > w) { x.fillText(line, a, yy); line = ch; yy += lh; } else line += ch; } x.fillText(line, a, yy); return yy; }
