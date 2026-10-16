@@ -354,6 +354,7 @@ function finish() {
   }).join('');
 
   $('rRule').textContent = S.formulaNote + ' ' + S.reverseNote + ' ' + S.ruleNote;
+  $('rSrc').textContent = S.source;
   const pinghe = S.dims.find(d => d.key === S.pingheKey);
   const target = pending ? pinghe : main;
   $('rAdvTitle').textContent = pending ? '未达判定线 · 可先参考平和质的日常保养' : main.name + ' · 养生调理方向';
@@ -393,7 +394,7 @@ function drawCard() {
   roundRect(x, 60, 60, W - 120, H - 120, 34); x.fill();
 
   const px = 120; let y = 190;
-  x.fillStyle = '#8b8f80'; x.font = '600 30px sans-serif'; x.fillText('中医体质自测 · 标准量表', px, y);
+  x.fillStyle = '#8b8f80'; x.font = '600 30px sans-serif'; x.fillText('中医体质自测 · 依据 ' + S.standard, px, y);
   y += 110;
   x.fillStyle = '#1f3d33'; x.font = '800 96px sans-serif';
   x.fillText(last.level === '未达判定线' ? '暂未判定' : main.name, px, y);
