@@ -58,6 +58,17 @@ h1,h2,h3{margin:0;font-weight:700;letter-spacing:-.02em}
 .eyebrow i{width:6px;height:6px;border-radius:50%;background:var(--accent);opacity:.7}
 .title{font-size:36px;line-height:1.16;letter-spacing:-.03em;font-weight:700;margin:16px 0 10px}
 .title em{font-style:normal;color:var(--accent)}
+/* 首页玉石球：纯 CSS 三层径向渐变造出体积感，无外链、无依赖 */
+.hd{position:relative}
+.orb{position:absolute;top:-14px;right:-40px;width:196px;height:196px;border-radius:50%;
+  pointer-events:none;z-index:-1;opacity:.85;
+  background:
+    radial-gradient(circle at 33% 25%, rgba(255,255,255,.95) 0 12%, rgba(255,255,255,0) 44%),
+    radial-gradient(circle at 66% 80%, rgba(143,191,174,.5) 0 26%, rgba(255,255,255,0) 60%),
+    radial-gradient(circle at 50% 52%, rgba(63,111,97,.22), rgba(63,111,97,.07) 58%, rgba(63,111,97,0) 71%);
+  animation:orb 11s ease-in-out infinite}
+@keyframes orb{0%,100%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(-8px,12px,0) scale(1.035)}}
+@media (prefers-color-scheme:dark){.orb{opacity:.5}}
 .lede{margin:0;font-size:16px;color:var(--muted);line-height:1.6}
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
 .chips span{padding:7px 12px;border-radius:11px;font-size:13px;font-weight:500;color:var(--ink2);
@@ -198,7 +209,8 @@ canvas{display:none}
 
   <!-- ========== 首页 ========== -->
   <section class="screen on" id="s-home">
-    <header style="padding:12px 6px 22px">
+    <header class="hd" style="padding:12px 6px 22px">
+      <i class="orb" aria-hidden="true"></i>
       <span class="eyebrow"><i></i>国标量表 · <span id="homeStd">GB/T 46939—2025</span></span>
       <h1 class="title">九种体质<br>你是<em>哪一种</em>？</h1>
       <p class="lede">按《中医体质分类与判定》原量表自测，答完自动算原始分与转化分，给出判定结果。</p>
