@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>中医体质自测 · 九种体质分类与判定</title>
+<meta name="description" content="依据《中医体质分类与判定》标准量表自测你的中医体质：9 种体质、自动计分、给出养生调理方向。仅供健康参考，不构成医疗诊断。">
+<meta name="theme-color" content="#1f3d33">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌿</text></svg>">
+<style>
+:root{
+  --paper:#f7f3ea; --ink:#22251f; --muted:#6b6f63;
+  --brand:#1f3d33; --brand-soft:#e4ebe3; --accent:#b4552d; --line:#ded6c6;
+  --ok:#3a7d5d; --warn:#c07a1e; --hot:#b4552d;
+  --r:16px; --shadow:0 6px 24px rgba(34,37,31,.08);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  background:var(--paper); color:var(--ink);
+  font:16px/1.65 -apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:560px;margin:0 auto;padding:20px 18px calc(28px + env(safe-area-inset-bottom))}
+h1,h2,h3{margin:0;font-weight:700;letter-spacing:.5px}
+.screen{display:none;animation:fade .25s ease}
+.screen.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.card{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:20px;box-shadow:var(--shadow);margin-bottom:16px}
+.hero{background:linear-gradient(160deg,#244137,#1b3029 60%,#16261f);color:#f5f0e4;border-radius:20px;padding:26px 22px;margin-bottom:18px;position:relative;overflow:hidden}
+.hero:after{content:"";position:absolute;right:-40px;top:-40px;width:180px;height:180px;border-radius:50%;background:rgba(255,255,255,.06)}
+.hero .tag{display:inline-block;font-size:12px;letter-spacing:2px;border:1px solid rgba(245,240,228,.4);border-radius:999px;padding:3px 12px;margin-bottom:14px}
+.hero h1{font-size:27px;line-height:1.3;margin-bottom:8px}
+.hero p{margin:0;color:#cfd8cd;font-size:14px}
+.meta{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+.meta span{background:rgba(255,255,255,.1);border-radius:10px;padding:6px 12px;font-size:12.5px;color:#e7e2d5}
+h2.sec{font-size:16px;margin:22px 0 10px;color:var(--brand);letter-spacing:1px}
+ul.tips{margin:0;padding-left:18px;color:var(--muted);font-size:14px}
+ul.tips li{margin:6px 0}
+.btn{display:block;width:100%;border:0;border-radius:14px;padding:16px;font-size:17px;font-weight:700;cursor:pointer;transition:transform .1s}
+.btn:active{transform:scale(.985)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.primary{background:var(--brand);color:#f7f3ea}
+.btn.ghost{background:#fff;color:var(--brand);border:1px solid var(--line)}
+.btn.soft{background:var(--brand-soft);color:var(--brand)}
+.btn+.btn{margin-top:10px}
+.note{font-size:12.5px;color:var(--muted);line-height:1.7}
+.src{font-size:11.5px;color:#9a9c8f;margin-top:10px}
+/* quiz */
+.topbar{position:sticky;top:0;z-index:5;background:var(--paper);padding:12px 0 8px;margin:-4px 0 6px}
+.prow{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--muted);margin-bottom:8px}
+.prow b{color:var(--brand);font-size:14px}
+.bar{height:5px;background:var(--line);border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--brand);border-radius:99px;transition:width .25s}
+.qnum{font-size:13px;letter-spacing:3px;color:#a9a596;font-weight:700}
+.qtext{font-size:22px;line-height:1.5;font-weight:700;margin:10px 0 22px;min-height:66px}
+.opts{display:flex;flex-direction:column;gap:10px}
+.opt{background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:15px 16px;font-size:16.5px;font-weight:600;color:var(--ink);cursor:pointer;text-align:left;display:flex;justify-content:space-between;align-items:center;transition:.12s}
+.opt small{font-weight:400;color:#a9a596;font-size:12px}
+.opt.sel{border-color:var(--brand);background:var(--brand);color:#f7f3ea}
+.opt.sel small{color:#bccfc4}
+.nav{display:flex;gap:10px;margin-top:18px}
+.nav .btn{flex:1;padding:13px;font-size:15px}
+/* result */
+.badge{display:inline-flex;align-items:center;gap:8px;background:var(--brand);color:#f7f3ea;border-radius:999px;padding:7px 16px;font-size:15px;font-weight:700}
+.rh{margin-bottom:6px}
+.rh .big{font-size:30px;font-weight:800;line-height:1.25;margin:12px 0 4px}
+.rh .sub{color:var(--muted);font-size:14px}
+.scorebar{margin:12px 0}
+.scorebar .lab{display:flex;justify-content:space-between;font-size:13.5px;margin-bottom:5px}
+.scorebar .lab em{font-style:normal;color:var(--muted)}
+.scorebar .track{height:9px;background:#efe9dc;border-radius:99px;overflow:hidden}
+.scorebar .track i{display:block;height:100%;border-radius:99px;background:#cfd6cb;transition:width .6s ease}
+.scorebar.hi .track i{background:var(--accent)}
+.scorebar.mid .track i{background:var(--warn)}
+.scorebar.ping .track i{background:var(--ok)}
+.pills{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 2px}
+.pill{border-radius:10px;padding:5px 11px;font-size:13px;background:var(--brand-soft);color:var(--brand);font-weight:600}
+.pill.on{background:#f3e0d6;color:var(--accent)}
+.adv{margin:0;padding:0;list-style:none}
+.adv li{padding:13px 0;border-bottom:1px dashed var(--line)}
+.adv li:last-child{border:0}
+.adv h4{margin:0 0 4px;font-size:15px;color:var(--brand);display:flex;gap:8px;align-items:baseline}
+.adv h4 span{font-size:11px;letter-spacing:1px;color:#a9a596;font-weight:600}
+.adv p{margin:0;font-size:14.5px;color:#4b4f45}
+.disc{background:#fbf6ec;border:1px solid #e8dcc4;border-radius:14px;padding:15px 16px;font-size:13.5px;line-height:1.8;color:#6a5a3c}
+.disc b{display:block;color:#8a5a1e;margin-bottom:3px;font-size:14px}
+/* modal / share */
+.mask{position:fixed;inset:0;background:rgba(20,22,18,.62);display:none;align-items:flex-end;justify-content:center;z-index:40;padding:0}
+.mask.on{display:flex}
+.sheet{background:var(--paper);width:100%;max-width:560px;border-radius:22px 22px 0 0;padding:20px 18px calc(20px + env(safe-area-inset-bottom));max-height:92vh;overflow:auto}
+.sheet h3{font-size:18px;margin-bottom:4px}
+#shareImg{width:100%;border-radius:14px;border:1px solid var(--line);display:block;margin:12px 0}
+canvas{display:none}
+@media (min-width:600px){.mask.on{align-items:center}.sheet{border-radius:22px;max-width:520px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ========== 首页 ========== -->
+  <section class="screen on" id="s-home">
+    <div class="hero">
+      <span class="tag">中医体质 · 标准量表</span>
+      <h1>你属于九种体质里的哪一种？</h1>
+      <p>按《中医体质分类与判定》标准量表自测，答完自动出转化分与判定结果。</p>
+      <div class="meta">
+        <span id="homeCount">— 道题</span>
+        <span>约 3–5 分钟</span>
+        <span>不用注册 · 不收集个人信息</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2 class="sec" style="margin-top:0">填答须知</h2>
+      <ul class="tips" id="homeTips"></ul>
+    </div>
+
+    <div class="card">
+      <h2 class="sec" style="margin-top:0">先选一下性别</h2>
+      <p class="note" style="margin-bottom:12px">国标附录A 的湿热质量表里有两条性别限定条目（限女性回答 / 限男性回答）。这里只用来跳过你不适用的那道题，答案只存在你手机里，不会上传。</p>
+      <div class="opts" id="sexRow">
+        <button class="opt" data-sex="F">女<small>F</small></button>
+        <button class="opt" data-sex="M">男<small>M</small></button>
+      </div>
+    </div>
+
+    <button class="btn primary" id="goStart">开始自测</button>
+    <button class="btn ghost" id="goResume" style="display:none">继续上次未答完的</button>
+
+    <p class="src" id="homeSrc"></p>
+
+    <div class="disc" style="margin-top:14px">
+      <b>重要提示</b>
+      仅供健康参考，不构成医疗诊断，请咨询执业医师。本页面不采集、不上传任何个人信息，答题记录只保存在你自己的手机里。
+    </div>
+  </section>
+
+  <!-- ========== 答题 ========== -->
+  <section class="screen" id="s-quiz">
+    <div class="topbar">
+      <div class="prow"><span id="qProg">第 1 / — 题</span><b id="qPct">0%</b></div>
+      <div class="bar"><i id="qBar" style="width:0%"></i></div>
+    </div>
+    <div class="card">
+      <div class="qnum" id="qNo">01</div>
+      <div class="qtext" id="qText">—</div>
+      <div class="opts" id="qOpts"></div>
+    </div>
+    <div class="nav">
+      <button class="btn soft" id="qPrev">← 上一题</button>
+      <button class="btn primary" id="qNext">下一题 →</button>
+    </div>
+    <p class="note" style="margin-top:14px">按你最近一年最常见的感觉作答，别想太久——第一反应往往最准。</p>
+  </section>
+
+  <!-- ========== 结果 ========== -->
+  <section class="screen" id="s-result">
+    <div class="card">
+      <div class="rh">
+        <span class="badge" id="rBadge">—</span>
+        <div class="big" id="rMain">—</div>
+        <div class="sub" id="rSub">—</div>
+      </div>
+      <div id="rPills" class="pills"></div>
+      <p class="note" id="rWhy" style="margin-top:12px"></p>
+    </div>
+
+    <div class="card">
+      <h2 class="sec" style="margin-top:0">九种体质转化分</h2>
+      <div id="rBars"></div>
+      <p class="note" style="margin-top:14px" id="rRule"></p>
+    </div>
+
+    <div class="card">
+      <h2 class="sec" style="margin-top:0" id="rAdvTitle">养生调理方向</h2>
+      <ul class="adv" id="rAdv"></ul>
+    </div>
+
+    <button class="btn primary" id="rShare">保存结果卡片 · 发小红书</button>
+    <button class="btn soft" id="rAll">看看九种体质详解</button>
+    <a class="btn ghost" id="rContact" style="display:none;text-align:center;text-decoration:none"></a>
+    <button class="btn ghost" id="rAgain">重新测一次</button>
+
+    <div class="disc" style="margin-top:16px">
+      <b>免责声明</b>
+      仅供健康参考，不构成医疗诊断，请咨询执业医师。体质判定会随季节、作息与身体状况变化；如有不适或正在服药，请前往正规医疗机构由执业医师四诊合参后判断。
+    </div>
+    <p class="src" id="rSrc"></p>
+  </section>
+
+  <!-- ========== 九种体质详解 ========== -->
+  <section class="screen" id="s-gloss">
+    <div class="card"><h2 class="sec" style="margin-top:0">九种体质速查</h2><div id="glList"></div></div>
+    <button class="btn primary" id="glBack">返回结果</button>
+  </section>
+
+  <!-- ========== 分享弹层 ========== -->
+  <div class="mask" id="mShare">
+    <div class="sheet">
+      <h3>你的体质卡片</h3>
+      <p class="note">长按图片保存，发小红书/朋友圈时配一句「测出来是XX质，你呢？」最容易引人跟测。</p>
+      <img id="shareImg" alt="体质结果卡片">
+      <button class="btn primary" id="shSave" style="display:none">下载图片</button>
+      <button class="btn ghost" id="shClose">关闭</button>
+    </div>
+  </div>
+
+</div>
+
+<canvas id="cv" width="1080" height="1440"></canvas>
+<script src="data.js"></script>
+<script src="advice.js"></script>
+<script>
+const S = window.CCMQ;                 // 国标数据：条目 / 量表 / 公式 / 阈值 / 特征
+const A = window.CCMQAdvice || {};     // T/CACM 1460-2023 摘录：调体原则 + 非药物调理五维度
+const LS = 'ccmq.v2';
+const state = { i: 0, answers: {}, sex: '' };
+
+const $ = id => document.getElementById(id);
+const show = id => ['s-home','s-quiz','s-result','s-gloss'].forEach(k => $(k).classList.toggle('on', k === id));
+
+/* 本次作答要走的题目：性别限定条目按所选性别过滤 */
+const qList = () => S.questions.filter(q => !q.sex || q.sex === state.sex);
+
+/* ---------- 计分：原始分 → 转化分（公式与逆向计分规则来自国标原文） ---------- */
+function scoreOf(key) {
+  const dim = S.dims.find(d => d.key === key);
+  const cells = dim.cells.filter(c => {
+    const q = S.questions.find(x => x.id === c.q);
+    return q && (!q.sex || q.sex === state.sex);
+  });
+  const n = cells.length;
+  const raw = cells.reduce((sum, c) => {
+    const v = state.answers[c.q];
+    if (!v) return sum;
+    return sum + (c.rev ? (S.scale.max + 1 - v) : v);   // 逆向计分：1→5，2→4，3→3，4→2，5→1
+  }, 0);
+  // 转化分 = [(原始分 − 条目数) / (条目数 × 4)] × 100
+  const conv = n ? Math.round(((raw - n) / (n * (S.scale.max - 1))) * 100) : 0;
+  return { raw, n, conv };
+}
+const answeredAll = () => qList().every(q => state.answers[q.id]);
+const answeredCount = () => qList().filter(q => state.answers[q.id]).length;
+
+/* ---------- 判定：偏颇质看阈值，平和质需同时满足其他 8 种够低 ---------- */
+function judge() {
+  const sc = {};
+  S.dims.forEach(d => sc[d.key] = scoreOf(d.key));
+  const isPing = k => k === S.pingheKey;
+  const biased = S.dims.filter(d => !isPing(d.key));
+  const maxOther = Math.max(...biased.map(d => sc[d.key].conv));
+
+  const verdict = {};
+  S.dims.forEach(d => {
+    const c = sc[d.key].conv, t = d.th;
+    if (isPing(d.key)) {
+      verdict[d.key] = (c >= t.yes && maxOther < t.gate) ? '是'
+                     : (c >= t.yes && maxOther < t.gate2) ? '基本是' : '否';
+    } else {
+      verdict[d.key] = c >= t.yes ? '是' : c >= t.maybe ? '倾向是' : '否';
+    }
+  });
+
+  // 主体质：偏颇体质里转化分最高且达到"是"；全不够则看平和质
+  const hits = biased.filter(d => verdict[d.key] === '是').sort((a,b)=>sc[b.key].conv - sc[a.key].conv);
+  const leans = biased.filter(d => verdict[d.key] === '倾向是').sort((a,b)=>sc[b.key].conv - sc[a.key].conv);
+  let main = null, level = '';
+  if (hits.length) { main = hits[0]; level = '是'; }
+  else if (leans.length) { main = leans[0]; level = '倾向是'; }
+  else if (verdict[S.pingheKey] !== '否') { main = S.dims.find(d => d.key === S.pingheKey); level = verdict[S.pingheKey]; }
+  else { main = biased.slice().sort((a,b)=>sc[b.key].conv - sc[a.key].conv)[0]; level = '未达判定线'; }
+
+  return { sc, verdict, main, level,兼夹: hits.filter(d => d.key !== main.key) };
+}
+
+/* ---------- 首页 ---------- */
+function renderHome() {
+  $('homeCount').textContent = (state.sex ? qList().length : S.questions.length) + ' 道题';
+  $('homeTips').innerHTML = S.tips.map(t => `<li>${t}</li>`).join('');
+  $('homeSrc').textContent = S.source;
+  $('sexRow').querySelectorAll('.opt').forEach(b => b.classList.toggle('sel', b.dataset.sex === state.sex));
+  $('goStart').disabled = !state.sex;
+  $('goResume').style.display = answeredCount() > 0 ? 'block' : 'none';
+}
+
+/* ---------- 答题 ---------- */
+function renderQ() {
+  const qs = qList();
+  const it = qs[state.i];
+  const done = answeredCount();
+  $('qProg').textContent = `第 ${state.i + 1} / ${qs.length} 题`;
+  $('qPct').textContent = Math.round(done / qs.length * 100) + '%';
+  $('qBar').style.width = (done / qs.length * 100) + '%';
+  $('qNo').textContent = String(state.i + 1).padStart(2, '0');
+  $('qText').textContent = it.text + (it.note ? `（${it.note}）` : '');
+  $('qOpts').innerHTML = S.scale.labels.map((lb, idx) => {
+    const v = idx + 1;
+    return `<button class="opt${state.answers[it.id] === v ? ' sel' : ''}" data-v="${v}">${lb}<small>${v}</small></button>`;
+  }).join('');
+  $('qPrev').disabled = state.i === 0;
+  $('qNext').textContent = state.i === qs.length - 1 ? '看结果 ✓' : '下一题 →';
+  $('qOpts').querySelectorAll('.opt').forEach(b => b.onclick = () => {
+    state.answers[it.id] = +b.dataset.v;
+    save();
+    if (state.i === qs.length - 1 && !answeredAll()) { jumpToFirstUnanswered(); }
+    else if (state.i === qs.length - 1) { finish(); }
+    else { state.i++; renderQ(); }
+  });
+}
+function jumpToFirstUnanswered() {
+  const idx = qList().findIndex(q => !state.answers[q.id]);
+  if (idx < 0) return finish();
+  state.i = idx; renderQ();
+  $('qProg').textContent = `还有 ${qList().length - answeredCount()} 题没答完`;
+}
+function save() { try { localStorage.setItem(LS, JSON.stringify(state)); } catch (e) {} }
+function load() {
+  try { const o = JSON.parse(localStorage.getItem(LS)) || {};
+    state.answers = o.answers || {}; state.sex = o.sex || ''; }
+  catch (e) { state.answers = {}; state.sex = ''; }
+}
+
+/* ---------- 结果 ---------- */
+let last = null;
+function finish() {
+  last = judge();
+  const { sc, verdict, main, level, 兼夹 } = last;
+  const isPing = main.key === S.pingheKey;
+  const pending = level === '未达判定线';   // 九种都没够线：不给体质名、不给建议，只让复核
+
+  $('rBadge').textContent = pending ? '自测结果' : isPing ? '标准判定' : '主体质';
+  $('rMain').textContent = pending ? '暂未判定' : main.name;
+  $('rSub').textContent = pending
+    ? `最高一项为 ${main.name}（转化分 ${sc[main.key].conv}），未达判定线`
+    : `${main.name} 转化分 ${sc[main.key].conv} · 判定结果：${level}`;
+  $('rWhy').textContent = pending
+    ? '各项转化分都未达到标准判定线。这通常说明当下身体状态比较平稳，或答题时偏向了同一种感觉。可以过段时间再测一次；若确实有不适，请由执业医师四诊合参判断。'
+    : main.feature;
+
+  $('rPills').innerHTML = S.dims
+    .filter(d => verdict[d.key] !== '否')
+    .sort((a, b) => sc[b.key].conv - sc[a.key].conv)
+    .map(d => `<span class="pill${d.key === main.key || verdict[d.key] === '是' ? ' on' : ''}">${d.name} ${verdict[d.key]} ${sc[d.key].conv}</span>`)
+    .join('') || '<span class="pill">暂无达到判定线的体质</span>';
+
+  $('rBars').innerHTML = S.dims.map(d => {
+    const c = sc[d.key].conv, v = verdict[d.key];
+    const cls = v === '是' ? 'hi' : v === '倾向是' || v === '基本是' ? 'mid' : d.key === S.pingheKey ? 'ping' : '';
+    return `<div class="scorebar ${cls}">
+      <div class="lab"><span>${d.name}</span><em>${c} 分 · ${v}</em></div>
+      <div class="track"><i style="width:${Math.max(2, Math.min(100, c))}%"></i></div>
+    </div>`;
+  }).join('');
+
+  $('rRule').textContent = S.formulaNote + ' ' + S.reverseNote + ' ' + S.ruleNote;
+  const pinghe = S.dims.find(d => d.key === S.pingheKey);
+  const target = pending ? pinghe : main;
+  $('rAdvTitle').textContent = pending ? '未达判定线 · 可先参考平和质的日常保养' : main.name + ' · 养生调理方向';
+  $('rAdv').innerHTML =
+    (target.principle ? `<li style="padding-top:0"><h4>调体原则<span>治未病干预指南</span></h4><p>${target.principle}</p></li>` : '') +
+    (target.advice || []).map(a => `<li><h4>${a.t}<span>${a.k}</span></h4><p>${a.d}</p></li>`).join('') +
+    (last.兼夹.length ? `<li><h4>兼夹<span>${last.兼夹.map(d => d.name).join('、')}</span></h4><p>${A.jianjia || ''}</p></li>` : '') +
+    `<li><p class="note">${S.adviceSource}</p></li>`;
+
+  const c = S.contact;
+  const link = $('rContact');
+  if (c && c.text) { link.style.display = 'block'; link.textContent = c.text; link.href = c.href || 'javascript:void(0)'; }
+  else link.style.display = 'none';
+
+  show('s-result');
+  window.scrollTo(0, 0);
+}
+
+/* ---------- 九种体质详解 ---------- */
+function renderGloss() {
+  $('glList').innerHTML = S.dims.map(d => `
+    <div style="padding:14px 0;border-bottom:1px dashed var(--line)">
+      <h3 style="font-size:16px;color:var(--brand);margin-bottom:5px">${d.name}</h3>
+      <p class="note" style="margin:0 0 8px">${d.feature}</p>
+      <p class="note" style="margin:0">${(d.advice || []).map(a => `【${a.t}】${a.d}`).join(' ')}</p>
+    </div>`).join('') + `<p class="src">${S.source} ${S.adviceSource}</p>
+    <div class="disc" style="margin-top:12px"><b>提示</b>仅供健康参考，不构成医疗诊断，请咨询执业医师。</div>`;
+}
+
+/* ---------- 分享卡片（1080×1440，小红书 3:4） ---------- */
+function drawCard() {
+  if (!last) return;
+  const cv = $('cv'), x = cv.getContext('2d'), W = cv.width, H = cv.height;
+  const { sc, main } = last;
+  x.fillStyle = '#1f3d33'; x.fillRect(0, 0, W, H);
+  x.fillStyle = '#f7f3ea';
+  roundRect(x, 60, 60, W - 120, H - 120, 34); x.fill();
+
+  const px = 120; let y = 190;
+  x.fillStyle = '#8b8f80'; x.font = '600 30px sans-serif'; x.fillText('中医体质自测 · 标准量表', px, y);
+  y += 110;
+  x.fillStyle = '#1f3d33'; x.font = '800 96px sans-serif';
+  x.fillText(last.level === '未达判定线' ? '暂未判定' : main.name, px, y);
+  y += 80;
+  x.fillStyle = '#b4552d'; x.font = '700 44px sans-serif';
+  x.fillText(`转化分 ${sc[main.key].conv}`, px, y);
+
+  y += 90;
+  const top = S.dims.filter(d => d.key !== S.pingheKey)
+    .map(d => ({ d, c: sc[d.key].conv })).sort((a, b) => b.c - a.c).slice(0, 4);
+  x.font = '600 34px sans-serif';
+  top.forEach(({ d, c }) => {
+    x.fillStyle = '#6b6f63'; x.fillText(d.name, px, y + 24);
+    x.fillStyle = '#e6dfd0'; x.fillRect(px + 260, y, 560, 30);
+    x.fillStyle = c >= 40 ? '#b4552d' : c >= 30 ? '#c07a1e' : '#3a7d5d';
+    x.fillRect(px + 260, y, Math.max(8, 560 * Math.min(100, c) / 100), 30);
+    x.fillStyle = '#22251f'; x.fillText(c + '', px + 850, y + 24);
+    y += 62;
+  });
+
+  y += 40;
+  x.fillStyle = '#6a5a3c'; x.font = '500 30px sans-serif';
+  wrapText(x, '仅供健康参考，不构成医疗诊断，请咨询执业医师。', px, y, W - px * 2, 44);
+  y += 100;
+  x.fillStyle = '#1f3d33'; x.font = '700 40px sans-serif';
+  x.fillText(S.brand || '@我的小红书', px, y);
+  x.fillStyle = '#8b8f80'; x.font = '400 28px sans-serif';
+  x.fillText(S.slogan || '评论区扣「测」，发你测一遍', px, y + 50);
+
+  x.fillStyle = '#e6dfd0'; x.fillRect(W - px - 200, H - 60 - 40 - 200, 200, 200);
+  x.fillStyle = '#9a9c8f'; x.font = '400 24px sans-serif';
+  x.fillText('放二维码', W - px - 160, H - 60 - 40 - 90);
+
+  const url = cv.toDataURL('image/png');
+  $('shareImg').src = url;
+  const a = document.createElement('a');
+  a.href = url; a.download = '我的中医体质卡片.png';
+  $('shSave').onclick = () => a.click();
+}
+function roundRect(x, a, b, w, h, r) { x.beginPath(); x.moveTo(a + r, b); x.arcTo(a + w, b, a + w, b + h, r); x.arcTo(a + w, b + h, a, b + h, r); x.arcTo(a, b + h, a, b, r); x.arcTo(a, b, a + w, b, r); x.closePath(); }
+function wrapText(x, t, a, b, w, lh) { let line = '', yy = b; for (const ch of t) { if (x.measureText(line + ch).width > w) { x.fillText(line, a, yy); line = ch; yy += lh; } else line += ch; } x.fillText(line, a, yy); }
+
+/* ---------- 路由 ---------- */
+$('sexRow').querySelectorAll('.opt').forEach(b => b.onclick = () => {
+  state.sex = b.dataset.sex; state.i = 0; save(); renderHome();
+});
+$('goStart').onclick = () => { if (!state.sex) return; state.i = 0; state.answers = {}; save(); show('s-quiz'); renderQ(); };
+$('goResume').onclick = () => { state.i = Math.max(0, qList().findIndex(q => !state.answers[q.id])); show('s-quiz'); renderQ(); };
+$('qPrev').onclick = () => { if (state.i > 0) { state.i--; renderQ(); } };
+$('qNext').onclick = () => {
+  if (!answeredAll()) { jumpToFirstUnanswered(); return; }
+  finish();
+};
+$('rAgain').onclick = () => { state.answers = {}; state.i = 0; save(); renderHome(); show('s-home'); };
+$('rAll').onclick = () => { renderGloss(); show('s-gloss'); };
+$('glBack').onclick = () => show('s-result');
+$('rShare').onclick = () => { drawCard(); $('mShare').classList.add('on'); };
+$('shClose').onclick = () => $('mShare').classList.remove('on');
+
+if (!S) {
+  document.body.innerHTML = '<div class="wrap"><div class="card"><h2>数据未加载</h2><p class="note">同目录下缺少 data.js（量表题库与计分数据）。</p></div></div>';
+} else {
+  // 调理建议来自另一份标准（T/CACM 1460-2023），与国标数据分文件存放，便于核对出处
+  S.dims.forEach(d => { const a = A[d.key]; if (a) { d.advice = a.adv; d.principle = a.principle; } });
+  load(); renderHome();
+}
+</script>
+</body>
+</html>
