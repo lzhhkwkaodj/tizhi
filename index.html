@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>中医体质自测 · 九种体质分类与判定</title>
-<meta name="description" content="依据《中医体质分类与判定》标准量表自测你的中医体质：9 种体质、自动计分、给出养生调理方向。仅供健康参考，不构成医疗诊断。">
+<meta name="description" content="依据《中医体质分类与判定》标准量表自测你的中医体质：9 种体质、自动计分，附宜食食材与起居参考。仅供健康参考，不构成医疗诊断。">
 <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f2f2f7">
 <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000000">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%233f6f61'/><text y='.78em' x='50%' text-anchor='middle' font-size='62'>🌿</text></svg>">
@@ -291,10 +291,10 @@ canvas{display:none}
       <p class="note" style="margin-top:16px;font-size:13px" id="rRule"></p>
     </div>
 
-    <h2 class="seclab" id="rAdvTitle">养生调理方向</h2>
+    <h2 class="seclab" id="rAdvTitle">宜食与起居参考</h2>
     <div class="card"><ul class="adv" id="rAdv"></ul></div>
 
-    <button class="btn primary" id="rShare">保存结果卡片 · 发小红书</button>
+    <button class="btn primary" id="rShare">保存结果卡片 · 发朋友圈</button>
     <button class="btn" id="rAll">看看九种体质详解</button>
     <a class="btn" id="rContact" style="display:none;text-align:center;text-decoration:none"></a>
     <button class="btn" id="rAgain">重新测一次</button>
@@ -318,7 +318,7 @@ canvas{display:none}
     <div class="sheet">
       <div class="grab"></div>
       <h3>你的体质卡片</h3>
-      <p class="note">手机上长按图片保存，电脑上点「下载图片」。发小红书/朋友圈时配一句「测出来是XX质，你呢？」最容易引人跟测。</p>
+      <p class="note">手机上长按图片保存，电脑上点「下载图片」。发朋友圈或群里时配一句「测出来是XX质，你呢？」最容易引人跟测。</p>
       <img id="shareImg" alt="体质结果卡片">
       <button class="btn primary" id="shSave" style="display:none">下载图片</button>
       <button class="btn" id="shClose">关闭</button>
@@ -329,11 +329,10 @@ canvas{display:none}
 
 <canvas id="cv" width="1080" height="1440"></canvas>
 <script src="data.js"></script>
-<script src="advice.js"></script>
-<script src="acu.js"></script>
+<script src="advice.public.js"></script>
 <script>
 const S = window.CCMQ;                 // 国标数据：条目 / 量表 / 公式 / 阈值 / 特征
-const A = window.CCMQAdvice || {};     // T/CACM 1460-2023 摘录：调体原则 + 非药物调理五维度
+const A = window.CCMQAdvice || {};     // 对外版：只含食材清单与起居/运动/情志条目（㊹）
 const Q = window.CCMQAcu || { groups: {}, pts: {} };
 const LS = 'ccmq.v2';
 const state = { i: 0, answers: {}, sex: '' };
@@ -494,7 +493,7 @@ function finish() {
   $('rSrc').textContent = S.source;
   const pinghe = S.dims.find(d => d.key === S.pingheKey);
   const target = pending ? pinghe : main;
-  $('rAdvTitle').textContent = pending ? '未达判定线 · 可先参考平和质的日常保养' : main.name + ' · 养生调理方向';
+  $('rAdvTitle').textContent = pending ? '未达判定线 · 可先参考平和质的日常起居' : main.name + ' · 宜食与起居参考';
   $('rAdv').innerHTML =
     (target.principle ? `<li><h4>调体原则<span>治未病干预指南</span></h4><p>${target.principle}</p></li>` : '') +
     (target.advice || []).map(a => `<li><h4>${a.t}<span>${a.k}</span></h4><p>${a.d}</p>${a.t === '穴位保健' ? acuHtml(a.d) : ''}</li>`).join('') +
@@ -617,22 +616,11 @@ function drawCard() {
     by += 52;
   });
 
-  // 免责（细框）+ 署名 + 二维码占位
+  // 免责（细框）。二维码与署名留到对客入口定下来再画，先不占位（㊹）
   const dy = H - P - 290;
-  x.strokeStyle = HAIR; x.lineWidth = 1.5; rr(x, px, dy, pw - 124, 76, 16); x.stroke();
+  x.strokeStyle = HAIR; x.lineWidth = 1.5; rr(x, px, dy, pw, 76, 16); x.stroke();
   x.fillStyle = INK2; x.font = `400 24px ${FONT}`;
   x.fillText('仅供健康参考，不构成医疗诊断，请咨询执业医师。', px + 26, dy + 47);
-
-  const qs = 168, qx = W - P - 62 - qs, qy = dy + 118;
-  x.fillStyle = INK; x.font = `600 40px ${FONT}`;
-  x.fillText(S.brand || '', px, qy + 40);
-  x.fillStyle = MUTED; x.font = `400 26px ${FONT}`;
-  x.fillText(S.slogan || '', px, qy + 84);
-
-  x.setLineDash([8, 8]); x.strokeStyle = '#cfccc4'; x.lineWidth = 2;
-  rr(x, qx, qy, qs, qs, 18); x.stroke(); x.setLineDash([]);
-  x.fillStyle = MUTED; x.font = `400 22px ${FONT}`; x.textAlign = 'center';
-  x.fillText('放二维码', qx + qs / 2, qy + qs / 2 + 8); x.textAlign = 'left';
 
   const url = cv.toDataURL('image/png');
   $('shareImg').src = url;
