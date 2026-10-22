@@ -84,7 +84,11 @@ h1,h2,h3,p{margin:0}
 .board-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin:38px 0 10px}
 .board-head h2{font-size:13px;font-weight:600;letter-spacing:.06em}
 .board-head span{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;color:var(--muted)}
-.board{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line-2);border-left:1px solid var(--line-2)}
+.board-stage{perspective:900px}
+.board{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line-2);border-left:1px solid var(--line-2);
+  transform-style:preserve-3d;transform:rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));
+  transition:transform .55s var(--ease);}
+.board-stage.is-tilting .board{transition:transform .1s linear}
 .tile{
   position:relative;display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;
   min-height:94px;padding:9px 11px 9px;background:none;border:0;
@@ -97,8 +101,8 @@ h1,h2,h3,p{margin:0}
 .tile:nth-child(7){animation-delay:.21s}.tile:nth-child(8){animation-delay:.245s}.tile:nth-child(9){animation-delay:.28s}
 @keyframes tileIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 .tile-no{font-family:var(--mono);font-size:8px;letter-spacing:.1em;color:var(--muted)}
-.tile-char{font-family:var(--serif);font-size:31px;line-height:1;font-weight:600;color:var(--ink);transition:color .25s var(--ease)}
-.tile-name{font-size:10.5px;letter-spacing:.08em;color:var(--ink-2);transition:color .25s}
+.tile-char{font-family:var(--serif);font-size:31px;line-height:1;font-weight:600;color:var(--ink);transition:color .25s var(--ease);transform:translateZ(12px)}
+.tile-name{font-size:10.5px;letter-spacing:.08em;color:var(--ink-2);transition:color .25s;transform:translateZ(6px)}
 .tile.is-on{background:var(--cinnabar-soft)}
 .tile.is-on .tile-char{color:var(--cinnabar)}
 @media (hover:hover){.tile:hover{background:var(--cinnabar-soft)}.tile:hover .tile-char{color:var(--cinnabar)}}
@@ -154,7 +158,7 @@ h1,h2,h3,p{margin:0}
 }
 .tip-no{font-family:var(--mono);font-size:8.5px;letter-spacing:.1em;color:var(--cinnabar);padding-top:4px}
 .fineprint{margin:24px 0 0;font-size:10.5px;line-height:1.85;color:var(--muted)}
-.lede,.fieldnote,.tips li,.notice,.verdict-feature,.adv-item p,.legal-body{text-wrap:pretty}
+.lede,.fieldnote,.tips li,.notice,.id-feature,.id-line,.adv-item p,.legal-body,.id-back-row p,.id-do-txt{text-wrap:pretty}
 .notice{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);font-size:11.5px;line-height:1.8;color:var(--ink-2)}
 .notice b{display:block;font-family:var(--mono);font-size:8.5px;letter-spacing:.14em;color:var(--cinnabar);margin-bottom:6px}
 /* 答题 */
@@ -199,57 +203,154 @@ h1,h2,h3,p{margin:0}
   padding:24px 0 12px;border-bottom:1px solid var(--line);
   font-family:var(--mono);font-size:8.5px;letter-spacing:.12em;color:var(--muted);
 }
-.verdict{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:16px 18px;padding:26px 0 24px;border-bottom:1px solid var(--line-2)}
-.verdict-main{min-width:0}
 .badge{
   display:inline-block;padding:4px 8px;border:1px solid var(--cinnabar);color:var(--cinnabar);
   font-family:var(--mono);font-size:8.5px;letter-spacing:.12em;line-height:1.2;
 }
-.verdict-name{
-  font-family:var(--serif);font-weight:700;font-size:clamp(40px,11vw,58px);line-height:1.12;
-  letter-spacing:.01em;margin:14px 0 10px;outline:none;
-}
-.verdict-feature{font-size:13.5px;line-height:1.85;color:var(--ink-2);max-width:29em}
-.verdict-meta{font-family:var(--mono);font-size:9px;letter-spacing:.06em;color:var(--muted);margin-top:12px}
-.score-fig{text-align:right;min-width:104px;padding-top:0}
-.score-fig b{
-  display:block;font-family:var(--mono);font-weight:500;font-size:clamp(64px,17vw,92px);
-  line-height:.95;letter-spacing:-.05em;border-bottom:1px solid var(--line-2);padding-bottom:10px;
-}
-.score-fig small{display:block;margin-top:8px;font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;color:var(--muted)}
-.verdict-foot{grid-column:1/-1}
 .tags{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
 .meta-label{font-family:var(--mono);font-size:8.5px;letter-spacing:.12em;color:var(--muted)}
 .tag{font-size:10.5px;padding:3px 7px;border:1px solid var(--line-2);color:var(--ink-2);letter-spacing:.04em}
+
+/* 结果：一张会转的体质卡 */
+@keyframes riseIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+#s-result .id-stage{animation:riseIn .7s var(--ease) both}
+#s-result .id-controls{animation:riseIn .6s var(--ease) .05s both}
+#s-result .actions{animation:riseIn .7s var(--ease) .1s both}
+.id-stage{
+  position:relative;margin:26px -2px 0;perspective:1400px;perspective-origin:50% 36%;
+  touch-action:pan-y;
+}
+.idcard{
+  position:relative;transform-style:preserve-3d;
+  transform:rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));
+  transition:transform .7s var(--ease);
+}
+.idcard:before{
+  content:"";position:absolute;inset:7px -6px -10px 6px;z-index:-1;
+  background:var(--paper);border:1px solid var(--line);
+  transform:translateZ(-22px);
+  box-shadow:0 30px 50px -30px rgba(12,16,13,.5);
+}
+.id-stage.is-tilting .idcard{transition:transform .1s linear}
+.idcard-flip{
+  position:relative;display:grid;transform-style:preserve-3d;
+  transition:transform .9s cubic-bezier(.45,.05,.55,.95);
+}
+.idcard.is-flipped .idcard-flip{transform:rotateY(180deg)}
+.idface{
+  grid-area:1/1;position:relative;display:flex;flex-direction:column;
+  min-height:452px;padding:24px 22px 20px;
+  background:
+    radial-gradient(130% 100% at 8% 0%,rgba(255,255,255,.55),transparent 55%),
+    linear-gradient(155deg,var(--sheet),var(--paper) 72%);
+  border:1px solid var(--line-2);
+  box-shadow:
+    0 1px 0 rgba(255,255,255,.5) inset,
+    0 34px 60px -34px rgba(12,16,13,.55),
+    0 8px 18px -12px rgba(12,16,13,.3);
+  transition:opacity .001s .45s;
+}
+@media (prefers-color-scheme:dark){
+  .idface{
+    background:radial-gradient(130% 100% at 8% 0%,rgba(255,255,255,.07),transparent 55%),
+      linear-gradient(155deg,var(--sheet),var(--paper) 72%);
+    box-shadow:0 1px 0 rgba(255,255,255,.06) inset,0 36px 70px -30px #000,0 8px 18px -12px rgba(0,0,0,.8);
+  }
+}
+.idface:after{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(360px circle at var(--mx,30%) var(--my,20%),rgba(255,255,255,.5),transparent 46%);
+  opacity:var(--glare,0);transition:opacity .45s var(--ease);mix-blend-mode:soft-light;
+}
+.idface.back{transform:rotateY(180deg);opacity:0;pointer-events:none}
+.idcard.is-flipped .idface.front{opacity:0;pointer-events:none}
+.idcard.is-flipped .idface.back{opacity:1;pointer-events:auto}
+.id-top{display:flex;justify-content:space-between;align-items:center;gap:12px;min-height:24px}
+.id-no{font-family:var(--mono);font-size:8.5px;letter-spacing:.14em;color:var(--muted)}
+.id-seal{
+  position:absolute;top:56px;right:22px;width:78px;height:78px;
+  display:grid;place-items:center;transform:translateZ(46px) rotate(-3.5deg);
+  background:var(--cinnabar);color:var(--paper);border-radius:2px;
+  font-family:var(--serif);font-size:46px;font-weight:700;line-height:1;
+  box-shadow:0 12px 24px -12px rgba(166,61,43,.65),inset 0 0 0 3px rgba(250,247,240,.18);
+}
+.id-seal:before{content:"";position:absolute;inset:5px;border:1px solid rgba(250,247,240,.42);border-radius:1px}
+.id-mark{
+  position:absolute;right:-4px;bottom:38px;pointer-events:none;
+  font-family:var(--serif);font-weight:700;font-size:188px;line-height:.8;
+  color:var(--ink);opacity:.038;transform:translateZ(-6px) rotate(-2deg);
+  letter-spacing:-.04em;
+}
+@media (prefers-color-scheme:dark){.id-mark{opacity:.055}}
+.id-name{
+  position:relative;font-family:var(--serif);font-weight:700;
+  font-size:clamp(42px,12vw,56px);line-height:1.05;letter-spacing:.01em;
+  margin:38px 0 0;max-width:calc(100% - 54px);transform:translateZ(24px);outline:none;
+}
+.id-line{
+  font-family:var(--serif);font-size:clamp(17px,4.6vw,20px);line-height:1.75;color:var(--ink);
+  margin:14px 0 0;max-width:20em;transform:translateZ(14px);
+}
+.id-feature{font-size:12.5px;line-height:1.85;color:var(--muted);margin:16px 0 0;max-width:25em;transform:translateZ(8px)}
+.id-foot{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:auto;padding-top:24px;transform:translateZ(6px)}
+.id-turn{margin-left:auto;font-family:var(--mono);font-size:8px;letter-spacing:.1em;color:var(--muted);white-space:nowrap}
+.id-kicker{font-family:var(--mono);font-size:9px;letter-spacing:.16em;color:var(--cinnabar)}
+.id-back-rows{margin-top:38px;border-top:1px solid var(--line-2);transform:translateZ(12px)}
+.id-back-row{display:grid;grid-template-columns:34px 1fr;gap:14px;padding:22px 0;border-bottom:1px solid var(--line)}
+.id-back-cn{
+  display:grid;place-items:center;width:30px;height:30px;margin-top:3px;
+  border:1px solid var(--cinnabar);color:var(--cinnabar);
+  font-family:var(--serif);font-size:15px;line-height:1;
+}
+.id-back-row p{font-size:14px;line-height:1.9;color:var(--ink-2)}
+.id-back-note{margin-top:18px;padding-left:12px;border-left:1px solid var(--cinnabar);font-size:11.5px;line-height:1.8;color:var(--muted);transform:translateZ(8px)}
+.id-back-foot{margin-top:auto;padding-top:24px;transform:translateZ(6px)}
+.id-back-foot p{font-family:var(--mono);font-size:9px;letter-spacing:.08em;color:var(--muted)}
+.id-back-foot .id-turn{display:block;margin:6px 0 0}
+.id-controls{display:flex;align-items:center;gap:12px;margin-top:16px}
+.id-flip{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:11px 16px;
+  border:1px solid var(--line-2);background:transparent;color:var(--ink);
+  font-size:11.5px;letter-spacing:.05em;cursor:pointer;
+  transition:background .25s,border-color .25s,color .25s;
+}
+.id-flip:hover{background:var(--cinnabar-soft);border-color:var(--cinnabar)}
+.id-hint{font-family:var(--mono);font-size:8px;letter-spacing:.1em;color:var(--muted)}
+@media (hover:none){.id-hint{display:none}}
 @media (max-width:360px){
-  .verdict{grid-template-columns:1fr}
-  .score-fig{text-align:left;min-width:0}
-  .score-fig b{display:inline-block;border-bottom:0;border-right:1px solid var(--line-2);padding:0 14px 0 0}
-  .score-fig small{display:inline-block;margin:0 0 0 12px}
+  .idface{min-height:430px;padding:20px 18px 18px}
+  .id-seal{top:50px;right:18px;width:66px;height:66px;font-size:40px}
+  .id-name{font-size:40px;margin-top:34px;max-width:calc(100% - 44px)}
+  .id-back-rows{margin-top:30px}
+  .id-back-row{padding:18px 0}
 }
-.spectrum{padding-top:32px}
-.spec-row{
-  display:grid;grid-template-columns:20px minmax(0,1fr) 68px 30px 48px;gap:9px;align-items:center;
-  padding:10px 0;border-bottom:1px solid var(--line);font-size:12px;
+
+/* 卡面里的三件事 */
+.id-do{margin-top:18px;padding-top:12px;border-top:1px solid var(--line-2);transform:translateZ(10px)}
+.id-do-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:5px;font-family:var(--mono);font-size:8.5px;letter-spacing:.13em;color:var(--cinnabar)}
+.id-do-head em{font-style:normal;color:var(--muted);letter-spacing:.06em}
+.id-do-row{display:grid;grid-template-columns:28px 1fr;gap:10px;align-items:start;padding:8px 0;border-bottom:1px solid var(--line)}
+.id-do-row:last-child{border-bottom:0;padding-bottom:2px}
+.id-do-cn{
+  display:grid;place-items:center;width:26px;height:26px;margin-top:1px;
+  border:1px solid var(--line-2);color:var(--cinnabar);
+  font-family:var(--serif);font-size:13.5px;line-height:1;
 }
-.spec-no{font-family:var(--mono);font-size:8px;letter-spacing:.1em;color:var(--muted)}
-.spec-name{letter-spacing:.04em;color:var(--ink-2);white-space:nowrap}
-.spec-track{position:relative;height:1px;background:var(--line);overflow:visible}
-.spec-track i{
-  position:absolute;left:0;top:-1px;height:3px;width:0;background:var(--moss);opacity:.55;
-  transition:width .9s var(--ease);
-}
-.spec-score{font-family:var(--mono);font-size:10px;text-align:right;color:var(--ink-2)}
-.spec-verdict{font-size:9.5px;text-align:right;color:var(--muted)}
-.spec-row.is-main{background:linear-gradient(90deg,var(--cinnabar-soft),transparent 65%)}
-.spec-row.is-main .spec-no,.spec-row.is-main .spec-score{color:var(--cinnabar)}
-.spec-row.is-main .spec-name{color:var(--ink);font-weight:600}
-.spec-row.is-main .spec-track i{background:var(--cinnabar);opacity:1}
-@media (max-width:400px){
-  .spec-row{grid-template-columns:16px minmax(0,1fr) 48px 26px 42px;gap:7px;font-size:11.5px}
-  .spec-name{font-size:11.5px}
-}
-.advice{padding-top:36px}
+.id-do-row:first-of-type .id-do-cn{background:var(--cinnabar);border-color:var(--cinnabar);color:var(--paper)}
+.id-do-txt{font-size:13px;line-height:1.65;color:var(--ink)}
+.id-do-txt b{font-size:10px;font-weight:600;letter-spacing:.06em;color:var(--muted);margin-right:5px}
+.id-do-note{display:block;margin-top:2px;font-style:normal;font-size:10.5px;line-height:1.6;color:var(--muted)}
+
+/* 四栏完整参考 */
+.fullref{margin-top:36px;border-top:1px solid var(--line-2);border-bottom:1px solid var(--line)}
+.fullref summary{display:flex;align-items:baseline;gap:10px;padding:16px 0;cursor:pointer;list-style:none}
+.fullref summary::-webkit-details-marker{display:none}
+.fullref summary>span:first-child{font-size:12.5px;font-weight:600;letter-spacing:.06em}
+.fullref summary em{margin-left:auto;font:normal 8.5px var(--mono);letter-spacing:.1em;color:var(--muted);white-space:nowrap}
+.fullref[open] .legal-plus{transform:rotate(45deg)}
+.fullref .advice-grid{border-bottom:0}
+.fullref .adv-src{padding:12px 0 16px;border-top:1px solid var(--line);font-size:10px;line-height:1.8;color:var(--muted)}
+@media (max-width:380px){.fullref summary em{display:none}}
 .advice-grid{border-bottom:1px solid var(--line)}
 .adv-item{border-top:1px solid var(--line);padding:18px 0 20px}
 .adv-head{display:flex;align-items:baseline;gap:10px;margin-bottom:8px}
@@ -334,7 +435,7 @@ canvas{display:none}
   .mask.on .sheet{transform:none;opacity:1}
 }
 :focus-visible{outline:2px solid var(--cinnabar);outline-offset:3px}
-.verdict-name:focus{outline:none}
+.id-name:focus{outline:none}
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.001s!important;transition-duration:.001s!important}
 }
@@ -367,7 +468,9 @@ canvas{display:none}
         <h2>九质谱</h2>
         <span>点一格 · 看特征</span>
       </div>
-      <div class="board" id="board" role="group" aria-label="九种体质索引"></div>
+      <div class="board-stage" id="boardStage">
+        <div class="board" id="board" role="group" aria-label="九种体质索引"></div>
+      </div>
       <p class="board-note" id="boardNote" aria-live="polite">九格只是索引，不是你测出来的结果。点一格，看看它讲的是什么。</p>
 
       <div class="startblock">
@@ -426,39 +529,81 @@ canvas{display:none}
         <span id="rDate">—</span>
       </div>
 
-      <div class="verdict">
-        <div class="verdict-main">
-          <span class="badge" id="rBadge">—</span>
-          <h1 class="verdict-name" id="rMain" tabindex="-1">—</h1>
-          <p class="verdict-feature" id="rWhy">—</p>
-          <p class="verdict-meta" id="rSub">—</p>
+      <div class="id-stage" id="idStage">
+        <div class="idcard" id="idCard">
+          <div class="idcard-flip">
+            <article class="idface front" id="idFront">
+              <div class="id-top">
+                <span class="badge" id="rBadge">—</span>
+                <span class="id-no" id="rNo">NO. 00 / 09</span>
+              </div>
+              <div class="id-seal" id="rSeal" aria-hidden="true">—</div>
+              <div class="id-mark" id="rMark" aria-hidden="true">—</div>
+              <h1 class="id-name" id="rMain" tabindex="-1">—</h1>
+              <p class="id-line" id="rLine">—</p>
+              <p class="id-feature" id="rWhy">—</p>
+              <div class="id-do">
+                <div class="id-do-head"><span>今天先做</span><em id="todayKicker">按主质</em></div>
+                <div class="id-do-row">
+                  <span class="id-do-cn" aria-hidden="true">吃</span>
+                  <div class="id-do-txt"><b>多吃</b><span id="qEat">—</span></div>
+                </div>
+                <div class="id-do-row">
+                  <span class="id-do-cn" aria-hidden="true">少</span>
+                  <div class="id-do-txt"><b>少碰</b><span id="qLess">—</span></div>
+                </div>
+                <div class="id-do-row">
+                  <span class="id-do-cn" aria-hidden="true">动</span>
+                  <div class="id-do-txt"><b>这样动</b><span id="qMove">—</span><em class="id-do-note" id="qMoveNote">—</em></div>
+                </div>
+              </div>
+              <div class="id-foot">
+                <div class="tags" id="rPills"></div>
+                <span class="id-turn">只存在你的设备上</span>
+              </div>
+            </article>
+            <article class="idface back" id="idBack" aria-hidden="true">
+              <div class="id-top">
+                <span class="id-kicker">今天怎么过</span>
+                <span class="id-no">BACK</span>
+              </div>
+              <div class="id-back-rows">
+                <div class="id-back-row"><span class="id-back-cn" aria-hidden="true">心</span><p id="rHeart">—</p></div>
+                <div class="id-back-row"><span class="id-back-cn" aria-hidden="true">居</span><p id="rRest">—</p></div>
+              </div>
+              <p class="id-back-note" id="rBackNote" hidden></p>
+              <div class="id-back-foot">
+                <p id="rSub">—</p>
+                <span class="id-turn">拖一下 · 翻回正面</span>
+              </div>
+            </article>
+          </div>
         </div>
-        <div class="score-fig">
-          <b id="rRingNum">—</b>
-          <small id="rScoreLab">转化分 / 100</small>
-        </div>
-        <div class="verdict-foot"><div class="tags" id="rPills"></div></div>
+      </div>
+      <div class="id-controls">
+        <button type="button" class="id-flip" id="idFlip" aria-pressed="false" aria-controls="idFront idBack">翻面 · 今天怎么过</button>
+        <span class="id-hint" aria-hidden="true">拖一下卡片也能翻</span>
       </div>
 
-      <section class="spectrum">
-        <h2 class="section-head">九种体质转化分<em>0–100</em></h2>
-        <div id="rBars"></div>
-      </section>
-
-      <section class="advice">
-        <h2 class="section-head"><span id="rAdvTitle">宜食与起居参考</span><em>四栏</em></h2>
-        <div class="advice-grid" id="rAdv"></div>
-      </section>
-
       <div class="actions">
-        <button type="button" class="cta" id="rShare">保存结果卡片<span class="arr" aria-hidden="true">→</span></button>
-        <p class="fineprint">长按图片可保存或转发。</p>
+        <button type="button" class="cta" id="rShare">保存我的体质卡<span class="arr" aria-hidden="true">↓</span></button>
+        <p class="fineprint">卡片上只有结论和今天能做的三件事。</p>
         <div class="linkrow">
           <button type="button" class="linkbtn" id="rAll">看九种体质详解</button>
           <button type="button" class="linkbtn" id="rAgain">重新测一次</button>
         </div>
         <a class="linkbtn" id="rContact" hidden></a>
       </div>
+
+      <details class="fullref">
+        <summary>
+          <span id="rAdvTitle">四栏完整参考</span>
+          <em>情志 / 饮食 / 起居 / 运动</em>
+          <span class="legal-plus" aria-hidden="true">+</span>
+        </summary>
+        <div class="advice-grid" id="rAdv"></div>
+        <p class="adv-src" id="rAdvSrc"></p>
+      </details>
 
       <div class="disclaimer">
         <b>免责声明</b>
@@ -469,7 +614,7 @@ canvas{display:none}
         <div class="legal-body">
           <p id="rRule"></p>
           <p id="rSrc"></p>
-          <p id="rAdvSrc"></p>
+          <p id="rAdvSrcLegacy"></p>
         </div>
       </details>
     </section>
@@ -511,6 +656,30 @@ const A = window.CCMQAdvice || {};     // 对外版：只含食材清单与起�
 const LS = 'ccmq.v2';
 const state = { i: 0, answers: {}, sex: '' };
 const ESSENCE = { pinghe:'和', qixu:'气', yangxu:'阳', yinxu:'阴', tanshi:'痰', shire:'湿', xueyu:'瘀', qiyu:'郁', tebing:'禀' };
+/* 把标准里的“主要特征”翻译成用户能立刻对上号的一句话 */
+const SOUL = {
+  pinghe:'身体像一支调准的钟：吃得下、睡得着，冷热都还应付得来。',
+  qixu:'电量掉得比别人快：说话、走路、忙一阵就想歇。',
+  yangxu:'身体像少了把火：手脚先凉，比别人怕冷。',
+  yinxu:'身体像缺了水：总觉得干、热，睡不沉。',
+  tanshi:'身体像回南天：发沉、发黏，容易困。',
+  shire:'像闷在蒸笼里：脸上油、身上黏，容易烦。',
+  xueyu:'身体的循环像堵车：颜色容易发暗，磕碰后印子退得慢。',
+  qiyu:'情绪容易打结：胸口发闷，叹口气才舒服。',
+  tebing:'身体的警报器特别灵：换季、花粉、某些食物容易有反应。'
+};
+/* 结果页只推三件能马上做的事；完整四栏收在折叠区 */
+const QUICK = {
+  pinghe:{ eat:'五谷杂粮、时令果蔬、小米', less:'过酸的食物，别吃到撑', move:'散步、五禽戏、八段锦', note:'选你愿意天天做的，饭后走百步' },
+  qixu:{ eat:'小米、山药、南瓜、鸡肉', less:'生萝卜、空心菜、过分油腻', move:'柔缓运动，少量多次', note:'别大汗淋漓，别长时间憋气' },
+  yangxu:{ eat:'羊肉、韭菜、核桃、生姜', less:'螃蟹、西瓜、冰饮', move:'阳光下散步、太极、八段锦', note:'挑白天暖和的时候，别在大风里练' },
+  yinxu:{ eat:'百合、梨、银耳、鸭肉', less:'辣椒、荔枝、龙眼', move:'太极、八段锦、游泳', note:'中小强度，出汗就停，及时补水' },
+  tanshi:{ eat:'冬瓜、薏米、赤小豆', less:'奶茶、油炸、冰激凌', move:'快走、慢跑、游泳', note:'每次约 1 小时，微汗就够' },
+  shire:{ eat:'绿豆、冬瓜、苦瓜、芹菜', less:'火锅、烧烤、肥肉', move:'球类、游泳、中长跑', note:'出汗多时及时补水' },
+  xueyu:{ eat:'山楂、黑木耳、玫瑰花', less:'乌梅、柿子、冰饮', move:'步行、舞蹈、八段锦', note:'中小负荷，动起来比强度重要' },
+  qiyu:{ eat:'黄花菜、金橘、佛手', less:'乌梅、石榴、泡菜', move:'群体运动、户外快走', note:'找个人一起，别总一个人待着' },
+  tebing:{ eat:'清淡、粗细搭配、自己吃着放心的', less:'辛辣、腥发、已知会让自己不舒服的', move:'散步、慢跑、瑜伽', note:'避开花粉扬尘，呼吸不畅就停' }
+};
 
 const $ = id => document.getElementById(id);
 const pad = n => String(n).padStart(2, '0');
@@ -680,86 +849,131 @@ function load() {
 }
 
 /* ---------- 结果 ---------- */
-let last = null, numRaf = 0;
-function animateNumber(el, to, dur) {
-  const id = ++numRaf;
-  if (reduceMotion()) { el.textContent = String(to); return; }
-  const t0 = performance.now();
-  const step = now => {
-    if (id !== numRaf) return;
-    const k = Math.min(1, (now - t0) / dur);
-    el.textContent = String(Math.round(to * (1 - Math.pow(1 - k, 3))));
-    if (k < 1) requestAnimationFrame(step);
+let last = null, flipped = false;
+
+function firstClauses(t, n = 2) {
+  return String(t || '').split(/[；。]/).map(s => s.trim()).filter(Boolean).slice(0, n).join('；') + '。';
+}
+const adviceText = (dim, k) => ((dim && dim.advice) || []).find(a => a.k === k)?.d || '';
+const quickOf = key => QUICK[key] || QUICK[S.pingheKey];
+
+function setFlip(on) {
+  flipped = on;
+  $('idCard').classList.toggle('is-flipped', on);
+  $('idFlip').setAttribute('aria-pressed', on ? 'true' : 'false');
+  $('idFlip').textContent = on ? '翻回 · 我的体质卡' : '翻面 · 今天怎么过';
+  $('idFront').setAttribute('aria-hidden', on ? 'true' : 'false');
+  $('idBack').setAttribute('aria-hidden', on ? 'false' : 'true');
+}
+
+/* 鼠标倾斜：卡片跟着指针轻微转动，光也跟着走 */
+function bindTilt(stage, target, maxX, maxY, glare) {
+  if (!stage || !target) return;
+  if (!window.matchMedia || !window.matchMedia('(hover:hover) and (pointer:fine)').matches) return;
+  let raf = 0;
+  stage.addEventListener('pointermove', e => {
+    if (e.pointerType !== 'mouse' || reduceMotion()) return;
+    const r = stage.getBoundingClientRect();
+    const px = Math.min(1, Math.max(0, (e.clientX - r.left) / r.width));
+    const py = Math.min(1, Math.max(0, (e.clientY - r.top) / r.height));
+    stage.classList.add('is-tilting');
+    stage.style.setProperty('--mx', (px * 100).toFixed(1) + '%');
+    stage.style.setProperty('--my', (py * 100).toFixed(1) + '%');
+    if (glare) stage.style.setProperty('--glare', '.9');
+    cancelAnimationFrame(raf);
+    raf = requestAnimationFrame(() => {
+      target.style.setProperty('--rx', ((.5 - py) * maxX).toFixed(2) + 'deg');
+      target.style.setProperty('--ry', ((px - .5) * maxY).toFixed(2) + 'deg');
+    });
+  });
+  const reset = () => {
+    cancelAnimationFrame(raf);
+    stage.classList.remove('is-tilting');
+    stage.style.setProperty('--glare', '0');
+    target.style.setProperty('--rx', '0deg');
+    target.style.setProperty('--ry', '0deg');
   };
-  requestAnimationFrame(step);
+  stage.addEventListener('pointerleave', reset);
+  stage.addEventListener('pointercancel', reset);
+}
+
+/* 手指/鼠标横向拖一下，翻面 */
+function bindSwipe(stage) {
+  let sx = 0, sy = 0, tracking = false;
+  stage.addEventListener('pointerdown', e => {
+    if (e.pointerType === 'mouse' && e.button !== 0) return;
+    tracking = true; sx = e.clientX; sy = e.clientY;
+  });
+  stage.addEventListener('pointerup', e => {
+    if (!tracking) return;
+    tracking = false;
+    const dx = e.clientX - sx, dy = e.clientY - sy;
+    if (Math.abs(dx) > 56 && Math.abs(dx) > Math.abs(dy) * 1.35) setFlip(!flipped);
+  });
+  stage.addEventListener('pointercancel', () => { tracking = false; });
 }
 
 function finish() {
   last = judge();
-  const { sc, verdict, main, level, 兼夹 } = last;
+  const { sc, main, level, 兼夹 } = last;
   const isPing = main.key === S.pingheKey;
   const pending = level === '未达判定线';
   const idx = S.dims.findIndex(d => d.key === main.key) + 1;
+  const target = pending ? S.dims.find(d => d.key === S.pingheKey) : main;
+  const qk = quickOf(pending ? S.pingheKey : main.key);
 
   $('rDate').textContent = new Date().toLocaleDateString('zh-CN', { year:'numeric', month:'2-digit', day:'2-digit' }).replace(/\//g, '.');
   $('rBadge').textContent = pending ? '自测结果' : isPing ? '标准判定' : `主体质 / ${pad(idx)}`;
+  $('rNo').textContent = pending ? 'NO. — / 09' : `NO. ${pad(idx)} / 09`;
+  $('rSeal').textContent = pending ? '待' : (ESSENCE[main.key] || '');
+  $('rMark').textContent = pending ? '待' : (ESSENCE[main.key] || '');
   $('rMain').textContent = pending ? '暂未判定' : main.name;
-  $('rSub').textContent = pending
-    ? `最高一项 ${main.name} · 未达判定线`
-    : `判定：${level} · 原始分 ${sc[main.key].raw} / ${sc[main.key].n} 条`;
+  $('rLine').textContent = pending
+    ? '各项都没到判定线，先按平和质的日常参考。'
+    : (SOUL[main.key] || '');
   $('rWhy').textContent = pending
-    ? '各项转化分都未达到标准判定线。这通常说明当下身体状态比较平稳，或答题时偏向了同一种感觉。可以过段时间再测一次；若确实有不适，请由执业医师四诊合参判断。'
+    ? '这不等于身体出了问题。可能只是最近状态平稳，或答题时感觉比较接近。可以过段时间再测；如有不适，请找执业医师看看。'
     : main.feature;
 
-  $('rScoreLab').textContent = pending ? '最高一项 / 100' : '转化分 / 100';
-  $('rRingNum').textContent = '0';
-  animateNumber($('rRingNum'), sc[main.key].conv, 900);
-
-  const tags = 兼夹.map(d => `<span class="tag">${d.name} ${sc[d.key].conv}</span>`).join('');
+  const tags = 兼夹.map(d => `<span class="tag">${d.name}</span>`).join('');
   $('rPills').innerHTML = tags ? `<span class="meta-label">兼夹</span>${tags}` : '';
   $('rPills').hidden = !tags;
 
-  $('rBars').innerHTML = S.dims.map((d, i) => {
-    const c = sc[d.key].conv, v = verdict[d.key];
-    return `<div class="spec-row${d.key === main.key ? ' is-main' : ''}">
-      <span class="spec-no">${pad(i+1)}</span>
-      <span class="spec-name">${d.name}</span>
-      <span class="spec-track"><i data-w="${Math.max(0, Math.min(100, c))}"></i></span>
-      <span class="spec-score">${c}</span>
-      <span class="spec-verdict">${v}</span>
-    </div>`;
-  }).join('');
+  $('rHeart').textContent = firstClauses(adviceText(target, '情志'), 2);
+  $('rRest').textContent = firstClauses(adviceText(target, '起居'), 2);
+  $('rBackNote').hidden = !兼夹.length;
+  $('rBackNote').textContent = 兼夹.length ? (A.jianjia || '') : '';
+  $('rSub').textContent = pending
+    ? `最高一项 ${main.name} · 未达判定线`
+    : `判定：${level} · 原始分 ${sc[main.key].raw} / ${sc[main.key].n} 条`;
+
+  $('todayKicker').textContent = pending ? '先按平和质' : `按 ${main.name}`;
+  $('qEat').textContent = qk.eat;
+  $('qLess').textContent = qk.less;
+  $('qMove').textContent = qk.move;
+  $('qMoveNote').textContent = qk.note;
 
   $('rRule').textContent = S.formulaNote + ' ' + S.reverseNote + ' ' + S.ruleNote;
   $('rSrc').textContent = S.source;
-  $('rAdvTitle').textContent = pending ? '未达判定线 · 先看平和质的日常起居' : '宜食与起居参考';
+  $('rAdvSrc').textContent = S.adviceSource;
+  $('rAdvSrcLegacy').textContent = S.adviceSource;
+  $('rAdvTitle').textContent = pending ? '未达判定线 · 平和质四栏' : `${main.name} · 四栏完整参考`;
 
-  const target = pending ? S.dims.find(d => d.key === S.pingheKey) : main;
   const items = (target.advice || []).map((a, i) => adviceItem(a, i));
   const note = 兼夹.length
     ? `<div class="adv-note"><span class="meta-label">兼夹</span><p>${A.jianjia || ''}</p></div>`
     : '';
   $('rAdv').innerHTML = items.join('') + note;
-  $('rAdvSrc').textContent = S.adviceSource;
 
   const c = S.contact;
   const link = $('rContact');
   if (c && c.text) { link.hidden = false; link.textContent = c.text; link.href = c.href || 'javascript:void(0)'; }
   else link.hidden = true;
 
+  setFlip(false);
   show('s-result');
   window.scrollTo(0, 0);
-  requestAnimationFrame(() => {
-    $('rMain').focus({ preventScroll: true });
-    const bars = Array.from(document.querySelectorAll('#rBars .spec-track i'));
-    bars.forEach(el => { el.style.width = '0%'; });
-    requestAnimationFrame(() => {
-      bars.forEach((el, i) => {
-        el.style.transitionDelay = reduceMotion() ? '0ms' : (90 + i * 45) + 'ms';
-        el.style.width = el.dataset.w + '%';
-      });
-    });
-  });
+  requestAnimationFrame(() => $('rMain').focus({ preventScroll: true }));
 }
 
 function adviceItem(a, i) {
@@ -811,99 +1025,131 @@ let shareFocus = null;
 function drawCard() {
   if (!last) return;
   const cv = $('cv'), x = cv.getContext('2d'), W = cv.width, H = cv.height;
-  const { sc, main, level } = last;
+  const { main, level, 兼夹 } = last;
   const pending = level === '未达判定线';
+  const isPing = main.key === S.pingheKey;
   const idx = S.dims.findIndex(d => d.key === main.key) + 1;
-  const conv = sc[main.key].conv;
+  const target = pending ? S.dims.find(d => d.key === S.pingheKey) : main;
+  const qk = quickOf(pending ? S.pingheKey : main.key);
+  const name = pending ? '暂未判定' : main.name;
+  const soul = pending ? '各项都没到判定线，先按平和质的日常参考。' : (SOUL[main.key] || '');
+  const feature = pending
+    ? '这不等于身体出了问题。可以过段时间再测；如有不适，请找执业医师看看。'
+    : main.feature;
 
   const PAPER = '#F3EFE5', INK = '#161A17', INK2 = '#3C443D', MUTED = '#6E6A60',
-        LINE = '#D8D1C3', CINN = '#A63D2B', MOSS = '#5D6B5E';
+        LINE = '#D8D1C3', CINN = '#A63D2B';
   const L = 88, R = W - 88;
+  const dstr = new Date().toLocaleDateString('zh-CN', { year:'numeric', month:'2-digit', day:'2-digit' }).replace(/\//g, '.');
 
   x.fillStyle = PAPER; x.fillRect(0, 0, W, H);
   x.strokeStyle = LINE; x.lineWidth = 2; x.strokeRect(40, 40, W - 80, H - 80);
-
   x.textBaseline = 'alphabetic';
-  x.textAlign = 'left';
-  x.fillStyle = INK; x.font = `600 24px ${F_SANS}`;
-  x.fillText('中医体质自测', L, 120);
-  const dstr = new Date().toLocaleDateString('zh-CN', { year:'numeric', month:'2-digit', day:'2-digit' }).replace(/\//g, '.');
+
+  /* 页眉 */
+  x.textAlign = 'left'; x.fillStyle = INK; x.font = `600 24px ${F_SANS}`;
+  x.fillText('中医体质自测', L, 118);
   x.textAlign = 'right'; x.fillStyle = MUTED; x.font = `400 18px ${F_MONO}`;
-  x.fillText('体质档案 · ' + dstr, R, 120);
+  x.fillText('体质档案 · ' + dstr, R, 118);
+  x.strokeStyle = LINE; x.lineWidth = 1;
+  x.beginPath(); x.moveTo(L, 152); x.lineTo(R, 152); x.stroke();
+
+  /* 主体质 + 朱印 */
+  x.textAlign = 'left'; x.fillStyle = CINN; x.font = `500 20px ${F_MONO}`;
+  x.fillText(pending ? '自测结果' : (isPing ? '标准判定' : `主体质 / ${String(idx).padStart(2, '0')}`), L, 214);
+
+  x.save();
+  x.translate(R - 70, 250); x.rotate(-3.5 * Math.PI / 180);
+  x.fillStyle = CINN; x.fillRect(-70, -70, 140, 140);
+  x.strokeStyle = 'rgba(250,247,240,.40)'; x.lineWidth = 2; x.strokeRect(-61, -61, 122, 122);
+  x.fillStyle = PAPER; x.font = `700 88px ${F_SERIF}`;
+  x.textAlign = 'center'; x.textBaseline = 'middle';
+  x.fillText(pending ? '待' : (ESSENCE[main.key] || ''), 0, 5);
+  x.restore();
+  x.textAlign = 'left'; x.textBaseline = 'alphabetic';
+
+  x.fillStyle = INK; x.font = `700 100px ${F_SERIF}`;
+  x.fillText(name, L, 362);
+
+  x.fillStyle = INK; x.font = `500 31px ${F_SERIF}`;
+  let y = wrapText(x, soul, L, 432, 860, 48);
+
+  x.fillStyle = MUTED; x.font = `400 23px ${F_SANS}`;
+  y = wrapText(x, feature, L, y + 36, 840, 38);
+
+  if (兼夹.length) {
+    x.fillStyle = CINN; x.font = `400 19px ${F_MONO}`;
+    x.fillText('兼夹 ' + 兼夹.map(d => d.name).join('、'), L, y + 36);
+    y += 36;
+  }
+
+  const dividerY = Math.max(620, y + 38);
+  x.strokeStyle = LINE; x.lineWidth = 1;
+  x.beginPath(); x.moveTo(L, dividerY); x.lineTo(R, dividerY); x.stroke();
+
+  /* 今天先做三件 */
+  x.fillStyle = CINN; x.font = `500 21px ${F_MONO}`;
+  x.fillText('今天先做三件', L, dividerY + 48);
+  x.textAlign = 'right'; x.fillStyle = MUTED; x.font = `400 18px ${F_MONO}`;
+  x.fillText(pending ? '先按平和质' : '按 ' + name, R, dividerY + 48);
   x.textAlign = 'left';
 
-  x.strokeStyle = LINE; x.lineWidth = 1;
-  x.beginPath(); x.moveTo(L, 150); x.lineTo(R, 150); x.stroke();
-
-  x.fillStyle = CINN; x.font = `500 20px ${F_MONO}`;
-  x.fillText(pending ? '自测结果' : (main.key === S.pingheKey ? '标准判定' : `主体质 / ${String(idx).padStart(2, '0')}`), L, 220);
-
-  const name = pending ? '暂未判定' : main.name;
-  x.fillStyle = INK; x.font = `700 94px ${F_SERIF}`;
-  x.fillText(name, L, 330);
-
-  x.textAlign = 'right';
-  x.fillStyle = INK; x.font = `500 128px ${F_MONO}`;
-  x.fillText(String(conv), R, 326);
-  x.fillStyle = MUTED; x.font = `400 18px ${F_MONO}`;
-  x.fillText(pending ? '最高一项 / 100' : '转化分 / 100', R, 360);
-  x.strokeStyle = CINN; x.lineWidth = 2;
-  x.beginPath(); x.moveTo(R - 238, 382); x.lineTo(R, 382); x.stroke();
-  x.textAlign = 'left';
-
-  x.fillStyle = INK2; x.font = `400 28px ${F_SANS}`;
-  const feature = pending
-    ? '各项转化分都未达到判定线，可过段时间复测；确有不适请由执业医师四诊合参判断。'
-    : main.feature;
-  wrapText(x, feature, L, 434, R - L, 44);
-
-  x.fillStyle = MUTED; x.font = `400 17px ${F_MONO}`;
-  x.fillText('九种体质转化分', L, 552);
-  x.strokeStyle = LINE; x.lineWidth = 1;
-  x.beginPath(); x.moveTo(L, 574); x.lineTo(R, 574); x.stroke();
-
-  const rowH = 57, barX = 300, barW = 470;
-  let y = 612;
-  S.dims.forEach(d => {
-    const c = sc[d.key].conv;
-    const isMain = d.key === main.key;
-    const rowTop = y - 26;
-    if (isMain) {
-      x.fillStyle = 'rgba(166,61,43,.055)';
-      x.fillRect(L - 14, rowTop, R - L + 28, rowH - 6);
-      x.fillStyle = CINN;
-      x.fillRect(L - 24, y - 16, 5, 22);
-    }
-    x.fillStyle = isMain ? INK : INK2;
-    x.font = `${isMain ? 600 : 400} 25px ${F_SANS}`;
-    x.fillText(d.name, L, y + 6);
-    x.fillStyle = '#E3DCCE';
-    x.fillRect(barX, y - 4, barW, 3);
-    x.globalAlpha = isMain ? 1 : .5;
-    x.fillStyle = isMain ? CINN : MOSS;
-    x.fillRect(barX, y - 4, Math.max(3, barW * Math.min(100, c) / 100), isMain ? 5 : 3);
-    x.globalAlpha = 1;
-    x.textAlign = 'right';
-    x.fillStyle = isMain ? CINN : MUTED;
-    x.font = `${isMain ? 600 : 400} 21px ${F_MONO}`;
-    x.fillText(String(c), R, y + 7);
-    x.textAlign = 'left';
+  const rows = [
+    { cn: '吃', label: '多吃这些', text: qk.eat, note: '' },
+    { cn: '少', label: '少碰这些', text: qk.less, note: '' },
+    { cn: '动', label: '这样动', text: qk.move, note: qk.note },
+  ];
+  let ry = dividerY + 98;
+  rows.forEach((row, i) => {
+    const bx = L + 94;
     x.strokeStyle = LINE; x.lineWidth = 1;
-    x.beginPath(); x.moveTo(L, y + 25); x.lineTo(R, y + 25); x.stroke();
-    y += rowH;
+    if (i > 0) { x.beginPath(); x.moveTo(L, ry - 20); x.lineTo(R, ry - 20); x.stroke(); }
+
+    if (i === 0) {
+      x.fillStyle = CINN; x.fillRect(L, ry, 68, 68);
+    } else {
+      x.strokeStyle = CINN; x.lineWidth = 1.5; x.strokeRect(L, ry, 68, 68);
+    }
+    x.fillStyle = i === 0 ? PAPER : CINN;
+    x.font = `600 36px ${F_SERIF}`;
+    x.textAlign = 'center'; x.textBaseline = 'middle';
+    x.fillText(row.cn, L + 34, ry + 36);
+    x.textAlign = 'left'; x.textBaseline = 'alphabetic';
+
+    x.fillStyle = MUTED; x.font = `400 20px ${F_SANS}`;
+    x.fillText(row.label, bx, ry + 24);
+    x.fillStyle = INK; x.font = `400 31px ${F_SANS}`;
+    let ty = wrapText(x, row.text, bx, ry + 62, R - bx, 42);
+
+    if (row.note) {
+      x.fillStyle = MUTED; x.font = `400 19px ${F_SANS}`;
+      x.fillText(row.note, bx, ty + 32);
+      ty += 32;
+    }
+    ry = Math.max(ry + 68, ty) + 38;
   });
 
+  /* 收束一句，再落免责 */
+  const closeY = Math.max(ry + 26, 1120);
+  x.strokeStyle = CINN; x.lineWidth = 2;
+  x.beginPath(); x.moveTo(L, closeY - 34); x.lineTo(L + 44, closeY - 34); x.stroke();
+  x.fillStyle = INK2; x.font = `400 28px ${F_SERIF}`;
+  const closeEnd = wrapText(x, '先把今天这三件做了，比记住一个分数有用。', L, closeY, 860, 42);
+
+  const discY = Math.max(closeEnd + 52, 1210);
   x.strokeStyle = LINE; x.lineWidth = 1;
-  x.beginPath(); x.moveTo(L, 1206); x.lineTo(R, 1206); x.stroke();
+  x.beginPath(); x.moveTo(L, discY - 34); x.lineTo(R, discY - 34); x.stroke();
 
   x.fillStyle = MUTED; x.font = `400 20px ${F_SANS}`;
-  x.fillText('仅供健康参考，不构成医疗诊断，请咨询执业医师。', L, 1246);
-  x.fillText('依据 GB/T 46939—2025 作答，结果仅作健康参考。', L, 1278);
+  x.fillText('仅供健康参考，不构成医疗诊断，请咨询执业医师。', L, discY);
+  x.fillText('体质会随季节、作息与身体状况变化，结果仅作参考。', L, discY + 34);
+  x.fillStyle = MUTED; x.font = `400 16px ${F_MONO}`;
+  x.fillText('依据 GB/T 46939—2025 作答', L, discY + 76);
 
   x.fillStyle = CINN; x.font = `400 16px ${F_MONO}`;
-  x.fillText('九种体质 · 自测', L, 1334);
+  x.fillText('九质 · 自测', L, 1352);
   x.textAlign = 'right'; x.fillStyle = MUTED;
-  x.fillText(S.standard, R, 1334); x.textAlign = 'left';
+  x.fillText(S.standard, R, 1352); x.textAlign = 'left';
 
   const url = cv.toDataURL('image/png');
   $('shareImg').src = url;
@@ -912,7 +1158,7 @@ function drawCard() {
   $('shSave').onclick = () => a.click();
   const canDownload = !!(window.matchMedia && window.matchMedia('(hover: hover)').matches);
   $('shSave').hidden = !canDownload;
-  $('shNote').textContent = (canDownload ? '点下方按钮下载' : '长按图片保存') + '；发到群里时，配一句“我测出来是××质”就够了。';
+  $('shNote').textContent = (canDownload ? '点下方按钮下载' : '长按图片保存') + '；卡片上只有结论和今天能做的三件事，发到群里，配一句“我测出来是××质”就够了。';
 }
 
 function wrapText(x, t, a, b, w, lh) {
@@ -981,6 +1227,10 @@ $('glBackTop').onclick = () => { show('s-result'); window.scrollTo(0, 0); };
 $('rShare').onclick = openShare;
 $('shClose').onclick = closeShare;
 $('mShare').addEventListener('click', e => { if (e.target === $('mShare')) closeShare(); });
+$('idFlip').onclick = () => setFlip(!flipped);
+bindTilt($('idStage'), $('idCard'), 9, 13, true);
+bindTilt($('boardStage'), $('board'), 5, 7, false);
+bindSwipe($('idStage'));
 document.addEventListener('keydown', e => {
   const mask = $('mShare');
   if (!mask.classList.contains('on')) return;
