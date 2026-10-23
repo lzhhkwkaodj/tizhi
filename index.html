@@ -433,7 +433,13 @@ h1,h2,h3,p{margin:0}
   background:none;color:var(--ink-2);font-size:16px;line-height:1;cursor:pointer;
 }
 .sheet .note{font-size:11.5px;line-height:1.8;color:var(--muted);margin:12px 0}
-#shareImg{width:100%;display:block;border:1px solid var(--line);margin:6px 0 14px}
+#shareImg{width:auto;max-width:100%;max-height:46vh;display:block;margin:6px auto 12px;border:1px solid var(--line)}
+.share-copy{margin:0 0 12px;padding:10px 12px;border-left:2px solid var(--cinnabar);background:var(--cinnabar-soft)}
+.share-copy-k{display:block;font-family:var(--mono);font-size:8px;letter-spacing:.12em;color:var(--muted);margin-bottom:4px}
+.share-copy p{font-size:12px;line-height:1.8;color:var(--ink-2)}
+.share-url{display:inline-block;margin-top:4px;font-family:var(--mono);font-size:10px;color:var(--muted);overflow-wrap:anywhere}
+.share-hint{font-family:var(--mono);font-size:9px;line-height:1.7;letter-spacing:.03em;color:var(--muted);margin:9px 0 0}
+#shCopy+.cta.ghost,#shCopy+.cta.ghost+.share-hint{margin-top:10px}
 canvas{display:none}
 .sheet .fineprint{margin-top:14px}
 @media (min-width:600px){
@@ -597,7 +603,7 @@ canvas{display:none}
       </div>
 
       <div class="actions">
-        <button type="button" class="cta" id="rShare">保存我的体质卡<span class="arr" aria-hidden="true">↓</span></button>
+        <button type="button" class="cta" id="rShare">分享我的体质卡<span class="arr" aria-hidden="true">↓</span></button>
         <p class="fineprint">卡片上有结论、转化分和今天能做的三件事。</p>
         <div class="linkrow">
           <button type="button" class="linkbtn" id="rAll">看九种体质详解</button>
@@ -646,12 +652,18 @@ canvas{display:none}
   <div class="mask" id="mShare">
     <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="shareTitle">
       <div class="sheet-head">
-        <h3 id="shareTitle">结果卡片</h3>
+        <h3 id="shareTitle">发给朋友，一起测</h3>
         <button type="button" class="sheet-close" id="shClose" aria-label="关闭">×</button>
       </div>
-      <p class="note" id="shNote">长按图片保存；发到群里时，配一句“我测出来是××质”就够了。</p>
+      <p class="note" id="shNote">复制邀请语发到群里，朋友点开就能测，不用注册；只想发卡片，长按图片保存。</p>
       <img id="shareImg" alt="体质结果卡片">
-      <button type="button" class="cta" id="shSave" hidden>下载图片<span class="arr" aria-hidden="true">↓</span></button>
+      <div class="share-copy" id="shCopyBox">
+        <span class="share-copy-k">会复制这段</span>
+        <p id="shCopyText">—</p>
+      </div>
+      <button type="button" class="cta" id="shCopy">复制邀请语和链接</button>
+      <button type="button" class="cta ghost" id="shSave" hidden>下载卡片图片<span class="arr" aria-hidden="true">↓</span></button>
+      <p class="share-hint" id="shSaveHint">长按上面的卡片保存图片，和链接一起发</p>
       <p class="fineprint">仅供健康参考，不构成医疗诊断，请咨询执业医师。</p>
     </div>
   </div>
@@ -1040,7 +1052,7 @@ function renderGloss() {
 const F_SERIF = '"Songti SC","STSong","Noto Serif SC","Source Han Serif SC",serif';
 const F_SANS = '"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif';
 const F_MONO = '"SF Mono","Roboto Mono","Cascadia Mono","Courier New",monospace';
-let shareFocus = null;
+let shareFocus = null, shareInvite = '', copyTimer = null;
 
 function drawCard() {
   if (!last) return;
@@ -1185,7 +1197,56 @@ function drawCard() {
   $('shSave').onclick = () => a.click();
   const canDownload = !!(window.matchMedia && window.matchMedia('(hover: hover)').matches);
   $('shSave').hidden = !canDownload;
-  $('shNote').textContent = (canDownload ? '点下方按钮下载' : '长按图片保存') + '；卡片上有结论、转化分和今天能做的三件事，发到群里，配一句“我测出来是××质”就够了。';
+  $('shSaveHint').hidden = canDownload;
+
+  const shareUrl = /^https?:$/.test(location.protocol)
+    ? location.origin + location.pathname.replace(/index\.html$/, '')
+    : '';
+  const invite = pending
+    ? '九种体质，我测了一遍，九项都还没到判定线。你也来看看自己是哪一种？'
+    : `九种体质，几分钟就能测。我是「${name}」——${soul.replace(/。$/, '')}。你也来看看自己是哪一种？`;
+  $('shCopyText').textContent = invite;
+  if (shareUrl) {
+    const br = document.createElement('br'), link = document.createElement('span');
+    link.className = 'share-url';
+    link.textContent = shareUrl;
+    $('shCopyText').append(br, link);
+  }
+  shareInvite = shareUrl ? invite + '\n' + shareUrl : '';
+  $('shCopyBox').hidden = !shareUrl;
+  $('shCopy').hidden = !shareUrl;
+  if ($('shCopy').dataset.label) $('shCopy').textContent = $('shCopy').dataset.label;
+  $('shNote').textContent = shareUrl
+    ? (canDownload
+      ? '复制邀请语发出去，朋友点开就能测，不用注册；也可以下载卡片单独发。'
+      : '复制邀请语发到群里，朋友点开就能测，不用注册；只想发卡片，长按图片保存。')
+    : '这是离线版，只能保存卡片；要让朋友测，需要打开线上页面。';
+}
+
+async function copyInvite() {
+  if (!shareInvite) return;
+  let ok = false;
+  try {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(shareInvite);
+      ok = true;
+    }
+  } catch {}
+  if (!ok) {
+    const ta = document.createElement('textarea');
+    ta.value = shareInvite;
+    ta.setAttribute('readonly', '');
+    ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0;pointer-events:none';
+    document.body.appendChild(ta);
+    ta.select(); ta.setSelectionRange(0, ta.value.length);
+    try { ok = document.execCommand('copy'); } catch {}
+    ta.remove();
+  }
+  const b = $('shCopy');
+  if (!b.dataset.label) b.dataset.label = b.textContent;
+  clearTimeout(copyTimer);
+  b.textContent = ok ? '已复制，去粘贴' : '复制失败，长按上面文字';
+  copyTimer = setTimeout(() => { b.textContent = b.dataset.label; }, 2400);
 }
 
 function wrapText(x, t, a, b, w, lh) {
@@ -1253,6 +1314,7 @@ $('glBack').onclick = () => { show('s-result'); window.scrollTo(0, 0); };
 $('glBackTop').onclick = () => { show('s-result'); window.scrollTo(0, 0); };
 $('rShare').onclick = openShare;
 $('shClose').onclick = closeShare;
+$('shCopy').onclick = copyInvite;
 $('mShare').addEventListener('click', e => { if (e.target === $('mShare')) closeShare(); });
 $('idFlip').onclick = () => setFlip(!flipped);
 bindTilt($('idStage'), $('idCard'), 9, 13, true);
@@ -1263,7 +1325,7 @@ document.addEventListener('keydown', e => {
   if (!mask.classList.contains('on')) return;
   if (e.key === 'Escape') { closeShare(); return; }
   if (e.key !== 'Tab') return;
-  const focusable = [$('shClose'), $('shSave')].filter(el => !el.hidden);
+  const focusable = [$('shClose'), $('shCopy'), $('shSave')].filter(el => !el.hidden);
   const first = focusable[0], lastEl = focusable[focusable.length - 1];
   if (e.shiftKey && document.activeElement === first) { e.preventDefault(); lastEl.focus(); }
   else if (!e.shiftKey && document.activeElement === lastEl) { e.preventDefault(); first.focus(); }
