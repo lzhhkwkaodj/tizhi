@@ -121,9 +121,7 @@ h1,h2,h3,p{margin:0}
   font-family:var(--serif);font-size:20px;line-height:1.2;color:var(--muted);cursor:pointer;
   transition:color .2s,border-color .2s;
 }
-.seg-btn+span+ .seg-btn{margin-left:0}
 .seg-btn.is-on{color:var(--ink);border-bottom-color:var(--cinnabar)}
-.seg-sep{width:1px;height:16px;background:var(--line-2)}
 .cta{
   display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;
   padding:17px 18px;border:1px solid var(--ink);background:var(--ink);color:var(--paper);
@@ -212,7 +210,6 @@ h1,h2,h3,p{margin:0}
 .tags{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
 .meta-label{font-family:var(--mono);font-size:8.5px;letter-spacing:.12em;color:var(--muted)}
 .tag{font-size:10.5px;padding:3px 7px;border:1px solid var(--line-2);color:var(--ink-2);letter-spacing:.04em}
-.tag b{margin-left:4px;font-family:var(--mono);font-size:9px;font-weight:400;color:var(--muted)}
 
 /* 结果：一张会转的体质卡 */
 @keyframes riseIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
@@ -295,10 +292,6 @@ h1,h2,h3,p{margin:0}
   margin:14px 0 0;max-width:20em;transform:translateZ(14px);
 }
 .id-feature{font-size:12.5px;line-height:1.85;color:var(--muted);margin:16px 0 0;max-width:25em;transform:translateZ(8px)}
-.id-score{display:flex;align-items:baseline;gap:8px;margin-top:14px;transform:translateZ(8px)}
-.id-score-k{font-family:var(--mono);font-size:8.5px;letter-spacing:.14em;color:var(--muted)}
-.id-score-v{font-family:var(--serif);font-weight:700;font-size:30px;line-height:1;letter-spacing:-.01em;color:var(--cinnabar)}
-.id-score-t{margin-left:auto;font-family:var(--mono);font-size:8.5px;line-height:1.5;letter-spacing:.05em;color:var(--muted);text-align:right}
 .id-foot{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:auto;padding-top:24px;transform:translateZ(6px)}
 .id-turn{margin-left:auto;font-family:var(--mono);font-size:8px;letter-spacing:.1em;color:var(--muted);white-space:nowrap}
 .id-kicker{font-family:var(--mono);font-size:9px;letter-spacing:.16em;color:var(--cinnabar)}
@@ -322,8 +315,6 @@ h1,h2,h3,p{margin:0}
   transition:background .25s,border-color .25s,color .25s;
 }
 .id-flip:hover{background:var(--cinnabar-soft);border-color:var(--cinnabar)}
-.id-hint{font-family:var(--mono);font-size:8px;letter-spacing:.1em;color:var(--muted)}
-@media (hover:none){.id-hint{display:none}}
 @media (max-width:360px){
   .idface{min-height:430px;padding:20px 18px 18px}
   .id-seal{top:50px;right:18px;width:66px;height:66px;font-size:40px}
@@ -433,7 +424,7 @@ h1,h2,h3,p{margin:0}
   background:none;color:var(--ink-2);font-size:16px;line-height:1;cursor:pointer;
 }
 .sheet .note{font-size:11.5px;line-height:1.8;color:var(--muted);margin:12px 0}
-#shareImg{width:auto;max-width:100%;max-height:42vh;display:block;margin:6px auto 12px;border:1px solid var(--line)}
+#shareImg{width:auto;max-width:100%;max-height:36vh;display:block;margin:14px auto 4px;border:1px solid var(--line)}
 .share-copy{margin:0 0 12px;padding:10px 12px;border-left:2px solid var(--cinnabar);background:var(--cinnabar-soft)}
 .share-copy-k{display:block;font-family:var(--mono);font-size:8px;letter-spacing:.12em;color:var(--muted);margin-bottom:4px}
 .share-copy p{font-size:12px;line-height:1.8;color:var(--ink-2)}
@@ -452,6 +443,127 @@ canvas{display:none}
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.001s!important;transition-duration:.001s!important}
 }
+
+/* 适老化：默认大字、大触控、主操作居中 */
+:root{--muted:#5B584F;--line-2:rgba(22,26,23,.42)}
+@media (prefers-color-scheme:dark){:root{--muted:#B5AFA1;--line-2:rgba(237,231,218,.4)}}
+body{font-size:17px;line-height:1.8}
+.mast-name{font-size:14px}
+.mast-std{font-size:11.5px;letter-spacing:.06em}
+.kicker{font-size:12px;gap:9px}
+.lede{font-size:17px;line-height:1.85}
+.facts{gap:9px 0;margin-top:22px;font-size:12.5px}
+.facts span+span:before{margin:0 9px}
+.typebook{margin-top:40px}
+.tile{min-height:104px;padding:11px 12px}
+.tile-no{font-size:10.5px}
+.tile-char{font-size:36px}
+.tile-name{font-size:13px}
+.board-note{min-height:0;padding-left:14px;font-size:15px;line-height:1.8}
+.startblock{margin-top:32px;padding-top:20px}
+.fieldlabel{font-size:16px}
+.req{font-size:11px}
+.fieldnote{font-size:14px;line-height:1.75;margin:6px 0 12px}
+.segline{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px}
+.seg-btn{min-height:56px;padding:10px;border:1px solid var(--line-2);background:transparent;color:var(--ink-2);font-size:24px;text-align:center}
+.seg-btn.is-on{border-color:var(--ink);background:var(--ink);color:var(--paper);font-weight:600}
+.seg-sep{display:none}
+.cta{justify-content:center;gap:10px;min-height:58px;padding:16px 18px;font-size:18px;letter-spacing:.06em}
+.cta .arr{font-size:20px}
+.linkbtn{min-height:48px;padding:10px 0;font-size:15px}
+.section-head{font-size:15px}
+.section-head em{font-size:11.5px}
+.tips li{grid-template-columns:26px 1fr;gap:12px;padding:15px 0;font-size:15px;line-height:1.8}
+.tip-no{font-size:11px}
+.fineprint{font-size:13px;line-height:1.9}
+.notice{font-size:14.5px;line-height:1.85}
+.notice b{font-size:11.5px}
+
+.qmeta{font-size:12.5px;letter-spacing:.04em}
+.qmeta-r{gap:10px}
+.qexit{min-height:44px;padding:8px 12px;border:1px solid var(--line-2);font-size:14px;text-decoration:none}
+.qnum{font-size:12px}
+.qtext{font-size:clamp(26px,7vw,34px);line-height:1.5;margin:14px 0 12px}
+.qnote{font-size:14px;line-height:1.75;margin-bottom:20px}
+.choice{grid-template-columns:22px 1fr;gap:14px;min-height:62px;padding:20px 2px;font-size:17px}
+.choice-mark{width:18px;height:18px}
+.choice-label b{font-size:18px}
+.choice-label em{font-size:14.5px}
+.quiz-nav{gap:14px;margin-top:24px}
+.qnav{min-height:52px;padding:0 18px;border:1px solid var(--line-2);background:transparent;font-size:16px}
+.qnav.primary{background:var(--ink);border-color:var(--ink);color:var(--paper);font-weight:600}
+.hint{font-size:13px}
+
+.report-head{padding:22px 0 12px;font-size:12.5px}
+.badge{padding:5px 9px;font-size:11.5px}
+.meta-label{font-size:11.5px}
+.tag{padding:4px 8px;font-size:12.5px}
+.tag b{font-size:11px}
+.idface{padding:24px 22px}
+.id-no{font-size:11px}
+.id-name{font-size:clamp(50px,13vw,64px);margin-top:36px;max-width:calc(100% - 56px)}
+.id-line{font-size:clamp(20px,5vw,23px);line-height:1.75}
+.id-feature{font-size:15.5px;line-height:1.85}
+.id-do-head{font-size:12px}
+.id-do-row{grid-template-columns:32px 1fr;gap:12px;padding:9px 0}
+.id-do-cn{width:30px;height:30px;font-size:16px}
+.id-do-txt{font-size:16.5px;line-height:1.7}
+.id-do-txt b{font-size:12.5px}
+.id-do-note{font-size:14px;line-height:1.65}
+.id-foot{gap:10px;padding-top:22px}
+.id-turn{font-size:11.5px}
+.id-kicker{font-size:12px}
+.id-back-rows{margin-top:34px}
+.id-back-row{grid-template-columns:38px 1fr;gap:14px;padding:22px 0}
+.id-back-cn{width:32px;height:32px;font-size:17px}
+.id-back-row p{font-size:17px;line-height:1.9}
+.id-back-note{font-size:14.5px;line-height:1.8}
+.id-back-foot p{font-size:12px}
+.id-controls{justify-content:center;margin-top:18px}
+.id-flip{min-height:54px;padding:12px 26px;font-size:17px;font-weight:600}
+
+.fullref{margin-top:30px}
+.fullref summary{min-height:58px;padding:18px 0}
+.fullref summary>span:first-child{font-size:15.5px}
+.fullref summary em{font-size:12px}
+.fullref .adv-src{font-size:12.5px}
+.adv-item{padding:20px 0 22px}
+.adv-head h3{font-size:15.5px}
+.adv-no{font-size:11px}
+.adv-item p{font-size:16px;line-height:1.9}
+.food{grid-template-columns:26px 1fr;gap:12px}
+.food-label{width:24px;height:24px;font-size:12px}
+.food p{font-size:16px;line-height:1.9}
+.adv-note p{font-size:15px;line-height:1.8}
+.actions{margin-top:30px}
+.actions .fineprint{margin-top:10px}
+.linkrow{justify-content:center;gap:8px 28px;margin-top:6px}
+.disclaimer{font-size:13.5px;line-height:1.9}
+.disclaimer b{font-size:12px}
+.legal summary{min-height:52px;font-size:14.5px}
+.legal-body{font-size:13.5px;line-height:1.9}
+
+.report-head .back{min-height:48px;padding:8px 12px;border:1px solid var(--line-2);font-size:14.5px}
+.gloss-item summary{grid-template-columns:24px 44px 1fr 24px;min-height:68px;padding:18px 0}
+.gloss-no{font-size:11px}
+.gloss-char{font-size:28px}
+.gloss-name{font-size:17px}
+.gloss-feature{font-size:14.5px}
+.gloss-adv h4{font-size:13px}
+.gloss-adv p{font-size:15.5px;line-height:1.85}
+
+.sheet{padding:16px 20px calc(24px + env(safe-area-inset-bottom))}
+.sheet h3{font-size:26px}
+.sheet-close{width:48px;height:48px;font-size:24px}
+.sheet .note{font-size:14.5px;line-height:1.8}
+#shareImg{max-height:36vh}
+.share-copy{padding:12px 14px}
+.share-copy-k{font-size:11px}
+.share-copy p{font-size:15px;line-height:1.8}
+.share-url{font-size:12.5px}
+.share-hint{font-size:12.5px;line-height:1.7}
+.sheet .fineprint{font-size:12.5px}
+:focus-visible{outline-width:3px}
 </style>
 </head>
 <body>
@@ -482,7 +594,6 @@ canvas{display:none}
         <p class="fieldnote">只用来跳过不适用的那道题，答案不上传。</p>
         <div class="segline" id="sexRow" role="group" aria-label="选择性别">
           <button type="button" class="seg-btn" data-sex="F" aria-pressed="false">女</button>
-          <span class="seg-sep" aria-hidden="true"></span>
           <button type="button" class="seg-btn" data-sex="M" aria-pressed="false">男</button>
         </div>
         <button type="button" class="cta" id="goStart" disabled><span id="goStartLab">请先选择性别</span><span class="arr" aria-hidden="true">→</span></button>
@@ -554,11 +665,6 @@ canvas{display:none}
               <h1 class="id-name" id="rMain" tabindex="-1">—</h1>
               <p class="id-line" id="rLine">—</p>
               <p class="id-feature" id="rWhy">—</p>
-              <div class="id-score">
-                <span class="id-score-k" id="rScoreK">转化分</span>
-                <b class="id-score-v" id="rScore">—</b>
-                <span class="id-score-t" id="rScoreNote">—</span>
-              </div>
               <div class="id-do">
                 <div class="id-do-head"><span>今天先做</span><em id="todayKicker">按主质</em></div>
                 <div class="id-do-row">
@@ -591,20 +697,19 @@ canvas{display:none}
               <p class="id-back-note" id="rBackNote" hidden></p>
               <div class="id-back-foot">
                 <p id="rSub">—</p>
-                <span class="id-turn">拖一下 · 翻回正面</span>
+                <span class="id-turn">按下方按钮翻回</span>
               </div>
             </article>
           </div>
         </div>
       </div>
       <div class="id-controls">
-        <button type="button" class="id-flip" id="idFlip" aria-pressed="false" aria-controls="idFront idBack">翻面 · 今天怎么过</button>
-        <span class="id-hint" aria-hidden="true">拖一下卡片也能翻</span>
+        <button type="button" class="id-flip" id="idFlip" aria-pressed="false" aria-controls="idFront idBack">翻过来看今天怎么过</button>
       </div>
 
       <div class="actions">
-        <button type="button" class="cta" id="rShare">分享我的体质卡<span class="arr" aria-hidden="true">↓</span></button>
-        <p class="fineprint">卡片上有结论、转化分和今天能做的三件事。</p>
+        <button type="button" class="cta" id="rShare">保存或分享我的体质卡<span class="arr" aria-hidden="true">↓</span></button>
+        <p class="fineprint">卡片上有结论和今天能做的三件事。</p>
         <div class="linkrow">
           <button type="button" class="linkbtn" id="rAll">看九种体质详解</button>
           <button type="button" class="linkbtn" id="rAgain">重新测一次</button>
@@ -656,14 +761,14 @@ canvas{display:none}
         <button type="button" class="sheet-close" id="shClose" aria-label="关闭">×</button>
       </div>
       <p class="note" id="shNote">复制邀请语发到群里，朋友点开就能测，不用注册；只想发卡片，长按图片保存。</p>
-      <img id="shareImg" alt="体质结果卡片">
       <div class="share-copy" id="shCopyBox">
         <span class="share-copy-k">会复制这段</span>
         <p id="shCopyText">—</p>
       </div>
       <button type="button" class="cta" id="shCopy">复制邀请语和链接</button>
       <button type="button" class="cta ghost" id="shSave" hidden>下载卡片图片<span class="arr" aria-hidden="true">↓</span></button>
-      <p class="share-hint" id="shSaveHint">长按上面的卡片保存图片，和链接一起发</p>
+      <p class="share-hint" id="shSaveHint">长按下面的卡片，选「保存图片」，和链接一起发</p>
+      <img id="shareImg" alt="体质结果卡片">
       <p class="fineprint">仅供健康参考，不构成医疗诊断，请咨询执业医师。</p>
     </div>
   </div>
@@ -807,7 +912,6 @@ function renderBoard() {
 }
 
 /* ---------- 答题 ---------- */
-let lock = false;
 function renderQ() {
   const qs = qList();
   if (!qs.length) return finish();
@@ -833,12 +937,8 @@ function renderQ() {
   $('qNext').textContent = state.i === qs.length - 1 ? '看结果 →' : '下一题 →';
   const qb = document.querySelector('#s-quiz .qbody');
   qb.classList.remove('is-new'); void qb.offsetWidth; qb.classList.add('is-new');
-  lock = false;
   $('qOpts').querySelectorAll('.choice').forEach(b => {
     b.onclick = () => {
-      if (lock) return;
-      lock = true;
-      const at = state.i;
       state.answers[it.id] = +b.dataset.v;
       save();
       $('qOpts').querySelectorAll('.choice').forEach(x => {
@@ -846,14 +946,6 @@ function renderQ() {
         x.classList.toggle('is-sel', on);
         x.setAttribute('aria-checked', on ? 'true' : 'false');
       });
-      setTimeout(() => {
-        if (!$('s-quiz').classList.contains('on')) { lock = false; return; }
-        if (state.i !== at) { lock = false; return; }
-        lock = false;
-        if (state.i === qs.length - 1 && !answeredAll()) jumpToFirstUnanswered();
-        else if (state.i === qs.length - 1) finish();
-        else { state.i++; renderQ(); }
-      }, 300);
     };
   });
 }
@@ -883,7 +975,7 @@ function setFlip(on) {
   flipped = on;
   $('idCard').classList.toggle('is-flipped', on);
   $('idFlip').setAttribute('aria-pressed', on ? 'true' : 'false');
-  $('idFlip').textContent = on ? '翻回 · 我的体质卡' : '翻面 · 今天怎么过';
+  $('idFlip').textContent = on ? '翻回去看我的体质卡' : '翻过来看今天怎么过';
   $('idFront').setAttribute('aria-hidden', on ? 'true' : 'false');
   $('idBack').setAttribute('aria-hidden', on ? 'false' : 'true');
 }
@@ -937,10 +1029,9 @@ function bindSwipe(stage) {
 
 function finish() {
   last = judge();
-  const { sc, main, level, 兼夹 } = last;
+  const { main, level, 兼夹 } = last;
   const isPing = main.key === S.pingheKey;
   const pending = level === '未达判定线';
-  const topDim = pending ? S.dims.reduce((a, b) => sc[b.key].conv > sc[a.key].conv ? b : a) : main;
   const idx = S.dims.findIndex(d => d.key === main.key) + 1;
   const target = pending ? S.dims.find(d => d.key === S.pingheKey) : main;
   const qk = quickOf(pending ? S.pingheKey : main.key);
@@ -958,26 +1049,15 @@ function finish() {
     ? '这不等于身体出了问题。可能只是最近状态平稳，或答题时感觉比较接近。可以过段时间再测；如有不适，请找执业医师看看。'
     : main.feature;
 
-  const tags = 兼夹.map(d => `<span class="tag">${d.name}<b>${sc[d.key].conv} 分</b></span>`).join('');
+  const tags = 兼夹.map(d => `<span class="tag">${d.name}</span>`).join('');
   $('rPills').innerHTML = tags ? `<span class="meta-label">兼夹</span>${tags}` : '';
   $('rPills').hidden = !tags;
-
-  const scoreNote = pending
-    ? `判定线 ≥${topDim.key === S.pingheKey ? topDim.th.yes : topDim.th.maybe} · 未达`
-    : isPing
-      ? `判定线 ≥${main.th.yes} · 其余 <${level === '是' ? main.th.gate : main.th.gate2}`
-      : `判定线 ≥${main.th.yes}${level === '倾向是' ? ' · 倾向是' : ''}`;
-  $('rScoreK').textContent = pending ? '最高分' : '转化分';
-  $('rScore').textContent = sc[topDim.key].conv;
-  $('rScoreNote').textContent = scoreNote;
 
   $('rHeart').textContent = firstClauses(adviceText(target, '情志'), 2);
   $('rRest').textContent = firstClauses(adviceText(target, '起居'), 2);
   $('rBackNote').hidden = !兼夹.length;
   $('rBackNote').textContent = 兼夹.length ? (A.jianjia || '') : '';
-  $('rSub').textContent = pending
-    ? `最高一项 ${topDim.name} · ${sc[topDim.key].conv} 分 · 未达判定线`
-    : `判定：${level} · 转化分 ${sc[main.key].conv} · 原始分 ${sc[main.key].raw} / ${sc[main.key].n} 条`;
+  $('rSub').textContent = pending ? '九项都未达判定线' : `判定：${level}`;
 
   $('todayKicker').textContent = pending ? '先按平和质' : `按 ${main.name}`;
   $('qEat').textContent = qk.eat;
@@ -1057,10 +1137,9 @@ let shareFocus = null, shareInvite = '', copyTimer = null;
 function drawCard() {
   if (!last) return;
   const cv = $('cv'), x = cv.getContext('2d'), W = cv.width, H = cv.height;
-  const { sc, main, level, 兼夹 } = last;
+  const { main, level, 兼夹 } = last;
   const pending = level === '未达判定线';
   const isPing = main.key === S.pingheKey;
-  const topDim = pending ? S.dims.reduce((a, b) => sc[b.key].conv > sc[a.key].conv ? b : a) : main;
   const idx = S.dims.findIndex(d => d.key === main.key) + 1;
   const target = pending ? S.dims.find(d => d.key === S.pingheKey) : main;
   const qk = quickOf(pending ? S.pingheKey : main.key);
@@ -1110,15 +1189,9 @@ function drawCard() {
   x.fillStyle = MUTED; x.font = `400 23px ${F_SANS}`;
   y = wrapText(x, feature, L, y + 36, 840, 38);
 
-  const scoreLine = `${pending ? '最高分' : '转化分'} ${sc[topDim.key].conv} / 100 · 判定线 ≥${
-    pending ? (topDim.key === S.pingheKey ? topDim.th.yes : topDim.th.maybe) : main.th.yes}`;
-  x.fillStyle = CINN; x.font = `400 20px ${F_MONO}`;
-  x.fillText(scoreLine, L, y + 38);
-  y += 38;
-
   if (兼夹.length) {
     x.fillStyle = CINN; x.font = `400 19px ${F_MONO}`;
-    x.fillText('兼夹 ' + 兼夹.map(d => `${d.name} ${sc[d.key].conv} 分`).join('、'), L, y + 36);
+    x.fillText('兼夹 ' + 兼夹.map(d => d.name).join('、'), L, y + 36);
     y += 36;
   }
 
@@ -1173,7 +1246,7 @@ function drawCard() {
   x.strokeStyle = CINN; x.lineWidth = 2;
   x.beginPath(); x.moveTo(L, closeY - 34); x.lineTo(L + 44, closeY - 34); x.stroke();
   x.fillStyle = INK2; x.font = `400 28px ${F_SERIF}`;
-  const closeEnd = wrapText(x, '分数记下现在的偏向；这三件事，从今天就能做。', L, closeY, 860, 42);
+  const closeEnd = wrapText(x, '这份偏向只作参考；这三件事，从今天就能做。', L, closeY, 860, 42);
 
   const discY = Math.max(closeEnd + 52, 1210);
   x.strokeStyle = LINE; x.lineWidth = 1;
@@ -1288,9 +1361,11 @@ $('goResume').onclick = () => {
   state.i = Math.max(0, qList().findIndex(q => !state.answers[q.id]));
   show('s-quiz'); renderQ(); window.scrollTo(0, 0);
 };
-$('qExit').onclick = () => { lock = false; renderHome(); show('s-home'); window.scrollTo(0, 0); };
+$('qExit').onclick = () => { renderHome(); show('s-home'); window.scrollTo(0, 0); };
 $('qPrev').onclick = () => { if (state.i > 0) { state.i--; renderQ(); } };
 $('qNext').onclick = () => {
+  const qs = qList();
+  if (state.i < qs.length - 1) { state.i++; renderQ(); return; }
   if (!answeredAll()) { jumpToFirstUnanswered(); return; }
   finish();
 };
