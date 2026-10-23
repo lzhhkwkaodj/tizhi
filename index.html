@@ -176,21 +176,23 @@ h1,h2,h3,p{margin:0}
 .qnum{font-family:var(--mono);font-size:9px;letter-spacing:.18em;color:var(--cinnabar)}
 .qtext{
   font-family:var(--serif);font-weight:600;font-size:clamp(24px,6.5vw,31px);line-height:1.5;
-  letter-spacing:.005em;margin:14px 0 34px;min-height:4.6em;
+  letter-spacing:.005em;margin:14px 0 10px;
 }
+.qnote{margin:0 0 22px;font-size:11px}
 .choices{border-top:1px solid var(--line-2)}
 .choice{
-  display:grid;grid-template-columns:18px 1fr 32px;gap:14px;align-items:center;width:100%;
-  padding:17px 2px;border:0;border-bottom:1px solid var(--line);background:none;
+  display:grid;grid-template-columns:18px 1fr;gap:14px;align-items:center;width:100%;
+  padding:18px 2px;border:0;border-bottom:1px solid var(--line);background:none;
   text-align:left;font-size:14.5px;line-height:1.5;color:var(--ink);cursor:pointer;
   transition:background .2s;
 }
 .choice-mark{width:13px;height:13px;border-radius:50%;border:1px solid var(--line-2);transition:background .2s,border-color .2s,box-shadow .2s}
-.choice-label em{font-style:normal;font-size:11.5px;color:var(--muted);margin-left:4px}
-.choice-code{font-family:var(--mono);font-size:9px;letter-spacing:.1em;color:var(--muted);text-align:right}
+.choice-label{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap}
+.choice-label b{font-weight:600;font-size:15.5px}
+.choice-label em{font-style:normal;font-size:12px;color:var(--muted)}
 .choice.is-sel{background:var(--cinnabar-soft)}
 .choice.is-sel .choice-mark{background:var(--cinnabar);border-color:var(--cinnabar);box-shadow:inset 0 0 0 3px var(--paper)}
-.choice.is-sel .choice-code{color:var(--cinnabar)}
+.choice.is-sel .choice-label em{color:var(--ink-2)}
 @media (hover:hover){.choice:hover{background:var(--cinnabar-soft)}}
 .quiz-nav{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:22px}
 .qnav{border:0;background:none;min-height:44px;padding:8px 0;font-size:12px;letter-spacing:.04em;color:var(--ink-2);cursor:pointer}
@@ -511,13 +513,13 @@ canvas{display:none}
         <div class="qbody">
           <div class="qnum" id="qNo">Q.01</div>
           <h2 class="qtext" id="qText" aria-live="polite">—</h2>
+          <p class="hint qnote">按最近一年最常见的情况选，别想太久；中途退出会自动保存。</p>
           <div class="choices" id="qOpts" role="radiogroup" aria-labelledby="qText"></div>
         </div>
         <div class="quiz-nav">
           <button type="button" class="qnav" id="qPrev">← 上一题</button>
           <button type="button" class="qnav primary" id="qNext">下一题 →</button>
         </div>
-        <p class="hint">按最近一年最常见的感觉作答，别想太久；中途退出会自动保存。</p>
       </div>
     </section>
 
@@ -656,6 +658,8 @@ const LS = 'ccmq.v2';
 const state = { i: 0, answers: {}, sex: '' };
 const ESSENCE = { pinghe:'和', qixu:'气', yangxu:'阳', yinxu:'阴', tanshi:'痰', shire:'湿', xueyu:'瘀', qiyu:'郁', tebing:'禀' };
 /* 把标准里的“主要特征”翻译成用户能立刻对上号的一句话 */
+// 量表五个词保留国标原词，括号里的同义解释换成更像日常说话的锚点；分值不变。
+const SCALE_HINT = ['从来没有过', '偶尔才会有', '时有时无', '大多数时候都有', '几乎一直如此'];
 const SOUL = {
   pinghe:'身体像一支调准的钟：吃得下、睡得着，冷热都还应付得来。',
   qixu:'电量掉得比别人快：说话、走路、忙一阵就想歇。',
@@ -796,14 +800,11 @@ function renderQ() {
   $('qText').textContent = it.text + (it.note ? `（${it.note}）` : '');
   $('qOpts').innerHTML = S.scale.labels.map((lb, idx) => {
     const v = idx + 1;
-    const cut = lb.indexOf('（');
-    const main = cut > 0 ? lb.slice(0, cut) : lb;
-    const sub = cut > 0 ? lb.slice(cut) : '';
+    const main = lb.split('（')[0];
     const sel = state.answers[it.id] === v;
     return `<button type="button" class="choice${sel ? ' is-sel' : ''}" data-v="${v}" role="radio" aria-checked="${sel ? 'true' : 'false'}">
       <span class="choice-mark" aria-hidden="true"></span>
-      <span class="choice-label">${main}${sub ? `<em>${sub}</em>` : ''}</span>
-      <span class="choice-code">${pad(v)}</span>
+      <span class="choice-label"><b>${main}</b><em>${SCALE_HINT[idx]}</em></span>
     </button>`;
   }).join('');
   $('qPrev').disabled = state.i === 0;
