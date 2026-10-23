@@ -194,7 +194,6 @@ h1,h2,h3,p{margin:0}
 @media (hover:hover){.choice:hover{background:var(--cinnabar-soft)}}
 .quiz-nav{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:22px}
 .qnav{border:0;background:none;min-height:44px;padding:8px 0;font-size:12px;letter-spacing:.04em;color:var(--ink-2);cursor:pointer}
-.qnav.primary{color:var(--ink);font-weight:600}
 .qnav:disabled{opacity:.3;cursor:not-allowed}
 .hint{margin:30px 0 0;font-size:10.5px;line-height:1.8;color:var(--muted)}
 /* 结果 */
@@ -431,6 +430,7 @@ h1,h2,h3,p{margin:0}
 .share-url{display:inline-block;margin-top:4px;font-family:var(--mono);font-size:10px;color:var(--muted);overflow-wrap:anywhere}
 .share-hint{font-family:var(--mono);font-size:9px;line-height:1.7;letter-spacing:.03em;color:var(--muted);margin:9px 0 0}
 #shCopy+.cta.ghost,#shCopy+.cta.ghost+.share-hint{margin-top:10px}
+.sheet .cta+.cta{margin-top:10px}
 canvas{display:none}
 .sheet .fineprint{margin-top:14px}
 @media (min-width:600px){
@@ -491,7 +491,6 @@ body{font-size:17px;line-height:1.8}
 .choice-label em{font-size:14.5px}
 .quiz-nav{gap:14px;margin-top:24px}
 .qnav{min-height:52px;padding:0 18px;border:1px solid var(--line-2);background:transparent;font-size:16px}
-.qnav.primary{background:var(--ink);border-color:var(--ink);color:var(--paper);font-weight:600}
 .hint{font-size:13px}
 
 .report-head{padding:22px 0 12px;font-size:12.5px}
@@ -635,12 +634,11 @@ body{font-size:17px;line-height:1.8}
         <div class="qbody">
           <div class="qnum" id="qNo">Q.01</div>
           <h2 class="qtext" id="qText" aria-live="polite">—</h2>
-          <p class="hint qnote">按最近一年最常见的情况选，别想太久；中途退出会自动保存。</p>
+          <p class="hint qnote">按最近一年最常见的情况选，别想太久；选完自动下一题，可用「上一题」回改。</p>
           <div class="choices" id="qOpts" role="radiogroup" aria-labelledby="qText"></div>
         </div>
         <div class="quiz-nav">
           <button type="button" class="qnav" id="qPrev">← 上一题</button>
-          <button type="button" class="qnav primary" id="qNext">下一题 →</button>
         </div>
       </div>
     </section>
@@ -762,10 +760,11 @@ body{font-size:17px;line-height:1.8}
       </div>
       <p class="note" id="shNote">复制邀请语发到群里，朋友点开就能测，不用注册；只想发卡片，长按图片保存。</p>
       <div class="share-copy" id="shCopyBox">
-        <span class="share-copy-k">会复制这段</span>
+        <span class="share-copy-k">分享这段</span>
         <p id="shCopyText">—</p>
       </div>
-      <button type="button" class="cta" id="shCopy">复制邀请语和链接</button>
+      <button type="button" class="cta" id="shShare">分享给朋友</button>
+      <button type="button" class="cta ghost" id="shCopy">复制邀请语和链接</button>
       <button type="button" class="cta ghost" id="shSave" hidden>下载卡片图片<span class="arr" aria-hidden="true">↓</span></button>
       <p class="share-hint" id="shSaveHint">长按下面的卡片，选「保存图片」，和链接一起发</p>
       <img id="shareImg" alt="体质结果卡片">
@@ -913,6 +912,7 @@ function renderBoard() {
 
 /* ---------- 答题 ---------- */
 function renderQ() {
+  clearTimeout(qTimer);
   const qs = qList();
   if (!qs.length) return finish();
   if (state.i < 0) state.i = 0;
@@ -934,7 +934,6 @@ function renderQ() {
     </button>`;
   }).join('');
   $('qPrev').disabled = state.i === 0;
-  $('qNext').textContent = state.i === qs.length - 1 ? '看结果 →' : '下一题 →';
   const qb = document.querySelector('#s-quiz .qbody');
   qb.classList.remove('is-new'); void qb.offsetWidth; qb.classList.add('is-new');
   $('qOpts').querySelectorAll('.choice').forEach(b => {
@@ -946,6 +945,11 @@ function renderQ() {
         x.classList.toggle('is-sel', on);
         x.setAttribute('aria-checked', on ? 'true' : 'false');
       });
+      clearTimeout(qTimer);
+      qTimer = setTimeout(() => {
+        if (state.i < qs.length - 1) { state.i++; renderQ(); return; }
+        if (answeredAll()) finish(); else jumpToFirstUnanswered();
+      }, 280);
     };
   });
 }
@@ -963,7 +967,7 @@ function load() {
 }
 
 /* ---------- 结果 ---------- */
-let last = null, flipped = false;
+let last = null, flipped = false, qTimer = null;
 
 function firstClauses(t, n = 2) {
   return String(t || '').split(/[；。]/).map(s => s.trim()).filter(Boolean).slice(0, n).join('；') + '。';
@@ -1287,16 +1291,19 @@ function drawCard() {
   }
   shareInvite = shareUrl ? invite + '\n' + shareUrl : '';
   $('shCopyBox').hidden = !shareUrl;
+  $('shShare').hidden = !shareUrl;
   $('shCopy').hidden = !shareUrl;
   if ($('shCopy').dataset.label) $('shCopy').textContent = $('shCopy').dataset.label;
+  const canNative = typeof navigator.share === 'function';
+  const tail = canDownload ? '也可以下载卡片单独发。' : '想只发卡片，长按下面的图保存。';
   $('shNote').textContent = shareUrl
-    ? (canDownload
-      ? '复制邀请语发出去，朋友点开就能测，不用注册；也可以下载卡片单独发。'
-      : '复制邀请语发到群里，朋友点开就能测，不用注册；只想发卡片，长按图片保存。')
+    ? (canNative
+      ? '点「分享给朋友」发到微信。' + tail
+      : '点「分享给朋友」会复制邀请语和链接，去微信粘贴即可。' + tail)
     : '这是离线版，只能保存卡片；要让朋友测，需要打开线上页面。';
 }
 
-async function copyInvite() {
+async function copyInvite(btn) {
   if (!shareInvite) return;
   let ok = false;
   try {
@@ -1315,7 +1322,7 @@ async function copyInvite() {
     try { ok = document.execCommand('copy'); } catch {}
     ta.remove();
   }
-  const b = $('shCopy');
+  const b = btn || $('shCopy');
   if (!b.dataset.label) b.dataset.label = b.textContent;
   clearTimeout(copyTimer);
   b.textContent = ok ? '已复制，去粘贴' : '复制失败，长按上面文字';
@@ -1361,14 +1368,8 @@ $('goResume').onclick = () => {
   state.i = Math.max(0, qList().findIndex(q => !state.answers[q.id]));
   show('s-quiz'); renderQ(); window.scrollTo(0, 0);
 };
-$('qExit').onclick = () => { renderHome(); show('s-home'); window.scrollTo(0, 0); };
+$('qExit').onclick = () => { clearTimeout(qTimer); renderHome(); show('s-home'); window.scrollTo(0, 0); };
 $('qPrev').onclick = () => { if (state.i > 0) { state.i--; renderQ(); } };
-$('qNext').onclick = () => {
-  const qs = qList();
-  if (state.i < qs.length - 1) { state.i++; renderQ(); return; }
-  if (!answeredAll()) { jumpToFirstUnanswered(); return; }
-  finish();
-};
 $('qOpts').addEventListener('keydown', e => {
   const keys = ['ArrowDown','ArrowUp','ArrowLeft','ArrowRight'];
   if (!keys.includes(e.key)) return;
@@ -1389,7 +1390,15 @@ $('glBack').onclick = () => { show('s-result'); window.scrollTo(0, 0); };
 $('glBackTop').onclick = () => { show('s-result'); window.scrollTo(0, 0); };
 $('rShare').onclick = openShare;
 $('shClose').onclick = closeShare;
-$('shCopy').onclick = copyInvite;
+$('shCopy').onclick = () => copyInvite($('shCopy'));
+$('shShare').onclick = async () => {
+  if (!shareInvite) return;
+  if (navigator.share) {
+    try { await navigator.share({ title: '中医体质自测', text: shareInvite }); return; }
+    catch (e) { if (e && e.name === 'AbortError') return; }
+  }
+  copyInvite($('shShare'));
+};
 $('mShare').addEventListener('click', e => { if (e.target === $('mShare')) closeShare(); });
 $('idFlip').onclick = () => setFlip(!flipped);
 bindTilt($('idStage'), $('idCard'), 9, 13, true);
@@ -1400,7 +1409,7 @@ document.addEventListener('keydown', e => {
   if (!mask.classList.contains('on')) return;
   if (e.key === 'Escape') { closeShare(); return; }
   if (e.key !== 'Tab') return;
-  const focusable = [$('shClose'), $('shCopy'), $('shSave')].filter(el => !el.hidden);
+  const focusable = [$('shClose'), $('shShare'), $('shCopy'), $('shSave')].filter(el => !el.hidden);
   const first = focusable[0], lastEl = focusable[focusable.length - 1];
   if (e.shiftKey && document.activeElement === first) { e.preventDefault(); lastEl.focus(); }
   else if (!e.shiftKey && document.activeElement === lastEl) { e.preventDefault(); first.focus(); }
