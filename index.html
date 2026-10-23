@@ -212,6 +212,7 @@ h1,h2,h3,p{margin:0}
 .tags{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
 .meta-label{font-family:var(--mono);font-size:8.5px;letter-spacing:.12em;color:var(--muted)}
 .tag{font-size:10.5px;padding:3px 7px;border:1px solid var(--line-2);color:var(--ink-2);letter-spacing:.04em}
+.tag b{margin-left:4px;font-family:var(--mono);font-size:9px;font-weight:400;color:var(--muted)}
 
 /* 结果：一张会转的体质卡 */
 @keyframes riseIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
@@ -294,6 +295,10 @@ h1,h2,h3,p{margin:0}
   margin:14px 0 0;max-width:20em;transform:translateZ(14px);
 }
 .id-feature{font-size:12.5px;line-height:1.85;color:var(--muted);margin:16px 0 0;max-width:25em;transform:translateZ(8px)}
+.id-score{display:flex;align-items:baseline;gap:8px;margin-top:14px;transform:translateZ(8px)}
+.id-score-k{font-family:var(--mono);font-size:8.5px;letter-spacing:.14em;color:var(--muted)}
+.id-score-v{font-family:var(--serif);font-weight:700;font-size:30px;line-height:1;letter-spacing:-.01em;color:var(--cinnabar)}
+.id-score-t{margin-left:auto;font-family:var(--mono);font-size:8.5px;line-height:1.5;letter-spacing:.05em;color:var(--muted);text-align:right}
 .id-foot{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:auto;padding-top:24px;transform:translateZ(6px)}
 .id-turn{margin-left:auto;font-family:var(--mono);font-size:8px;letter-spacing:.1em;color:var(--muted);white-space:nowrap}
 .id-kicker{font-family:var(--mono);font-size:9px;letter-spacing:.16em;color:var(--cinnabar)}
@@ -543,6 +548,11 @@ canvas{display:none}
               <h1 class="id-name" id="rMain" tabindex="-1">—</h1>
               <p class="id-line" id="rLine">—</p>
               <p class="id-feature" id="rWhy">—</p>
+              <div class="id-score">
+                <span class="id-score-k" id="rScoreK">转化分</span>
+                <b class="id-score-v" id="rScore">—</b>
+                <span class="id-score-t" id="rScoreNote">—</span>
+              </div>
               <div class="id-do">
                 <div class="id-do-head"><span>今天先做</span><em id="todayKicker">按主质</em></div>
                 <div class="id-do-row">
@@ -588,7 +598,7 @@ canvas{display:none}
 
       <div class="actions">
         <button type="button" class="cta" id="rShare">保存我的体质卡<span class="arr" aria-hidden="true">↓</span></button>
-        <p class="fineprint">卡片上只有结论和今天能做的三件事。</p>
+        <p class="fineprint">卡片上有结论、转化分和今天能做的三件事。</p>
         <div class="linkrow">
           <button type="button" class="linkbtn" id="rAll">看九种体质详解</button>
           <button type="button" class="linkbtn" id="rAgain">重新测一次</button>
@@ -918,6 +928,7 @@ function finish() {
   const { sc, main, level, 兼夹 } = last;
   const isPing = main.key === S.pingheKey;
   const pending = level === '未达判定线';
+  const topDim = pending ? S.dims.reduce((a, b) => sc[b.key].conv > sc[a.key].conv ? b : a) : main;
   const idx = S.dims.findIndex(d => d.key === main.key) + 1;
   const target = pending ? S.dims.find(d => d.key === S.pingheKey) : main;
   const qk = quickOf(pending ? S.pingheKey : main.key);
@@ -935,17 +946,26 @@ function finish() {
     ? '这不等于身体出了问题。可能只是最近状态平稳，或答题时感觉比较接近。可以过段时间再测；如有不适，请找执业医师看看。'
     : main.feature;
 
-  const tags = 兼夹.map(d => `<span class="tag">${d.name}</span>`).join('');
+  const tags = 兼夹.map(d => `<span class="tag">${d.name}<b>${sc[d.key].conv} 分</b></span>`).join('');
   $('rPills').innerHTML = tags ? `<span class="meta-label">兼夹</span>${tags}` : '';
   $('rPills').hidden = !tags;
+
+  const scoreNote = pending
+    ? `判定线 ≥${topDim.key === S.pingheKey ? topDim.th.yes : topDim.th.maybe} · 未达`
+    : isPing
+      ? `判定线 ≥${main.th.yes} · 其余 <${level === '是' ? main.th.gate : main.th.gate2}`
+      : `判定线 ≥${main.th.yes}${level === '倾向是' ? ' · 倾向是' : ''}`;
+  $('rScoreK').textContent = pending ? '最高分' : '转化分';
+  $('rScore').textContent = sc[topDim.key].conv;
+  $('rScoreNote').textContent = scoreNote;
 
   $('rHeart').textContent = firstClauses(adviceText(target, '情志'), 2);
   $('rRest').textContent = firstClauses(adviceText(target, '起居'), 2);
   $('rBackNote').hidden = !兼夹.length;
   $('rBackNote').textContent = 兼夹.length ? (A.jianjia || '') : '';
   $('rSub').textContent = pending
-    ? `最高一项 ${main.name} · 未达判定线`
-    : `判定：${level} · 原始分 ${sc[main.key].raw} / ${sc[main.key].n} 条`;
+    ? `最高一项 ${topDim.name} · ${sc[topDim.key].conv} 分 · 未达判定线`
+    : `判定：${level} · 转化分 ${sc[main.key].conv} · 原始分 ${sc[main.key].raw} / ${sc[main.key].n} 条`;
 
   $('todayKicker').textContent = pending ? '先按平和质' : `按 ${main.name}`;
   $('qEat').textContent = qk.eat;
@@ -1025,9 +1045,10 @@ let shareFocus = null;
 function drawCard() {
   if (!last) return;
   const cv = $('cv'), x = cv.getContext('2d'), W = cv.width, H = cv.height;
-  const { main, level, 兼夹 } = last;
+  const { sc, main, level, 兼夹 } = last;
   const pending = level === '未达判定线';
   const isPing = main.key === S.pingheKey;
+  const topDim = pending ? S.dims.reduce((a, b) => sc[b.key].conv > sc[a.key].conv ? b : a) : main;
   const idx = S.dims.findIndex(d => d.key === main.key) + 1;
   const target = pending ? S.dims.find(d => d.key === S.pingheKey) : main;
   const qk = quickOf(pending ? S.pingheKey : main.key);
@@ -1077,9 +1098,15 @@ function drawCard() {
   x.fillStyle = MUTED; x.font = `400 23px ${F_SANS}`;
   y = wrapText(x, feature, L, y + 36, 840, 38);
 
+  const scoreLine = `${pending ? '最高分' : '转化分'} ${sc[topDim.key].conv} / 100 · 判定线 ≥${
+    pending ? (topDim.key === S.pingheKey ? topDim.th.yes : topDim.th.maybe) : main.th.yes}`;
+  x.fillStyle = CINN; x.font = `400 20px ${F_MONO}`;
+  x.fillText(scoreLine, L, y + 38);
+  y += 38;
+
   if (兼夹.length) {
     x.fillStyle = CINN; x.font = `400 19px ${F_MONO}`;
-    x.fillText('兼夹 ' + 兼夹.map(d => d.name).join('、'), L, y + 36);
+    x.fillText('兼夹 ' + 兼夹.map(d => `${d.name} ${sc[d.key].conv} 分`).join('、'), L, y + 36);
     y += 36;
   }
 
@@ -1134,7 +1161,7 @@ function drawCard() {
   x.strokeStyle = CINN; x.lineWidth = 2;
   x.beginPath(); x.moveTo(L, closeY - 34); x.lineTo(L + 44, closeY - 34); x.stroke();
   x.fillStyle = INK2; x.font = `400 28px ${F_SERIF}`;
-  const closeEnd = wrapText(x, '先把今天这三件做了，比记住一个分数有用。', L, closeY, 860, 42);
+  const closeEnd = wrapText(x, '分数记下现在的偏向；这三件事，从今天就能做。', L, closeY, 860, 42);
 
   const discY = Math.max(closeEnd + 52, 1210);
   x.strokeStyle = LINE; x.lineWidth = 1;
@@ -1158,7 +1185,7 @@ function drawCard() {
   $('shSave').onclick = () => a.click();
   const canDownload = !!(window.matchMedia && window.matchMedia('(hover: hover)').matches);
   $('shSave').hidden = !canDownload;
-  $('shNote').textContent = (canDownload ? '点下方按钮下载' : '长按图片保存') + '；卡片上只有结论和今天能做的三件事，发到群里，配一句“我测出来是××质”就够了。';
+  $('shNote').textContent = (canDownload ? '点下方按钮下载' : '长按图片保存') + '；卡片上有结论、转化分和今天能做的三件事，发到群里，配一句“我测出来是××质”就够了。';
 }
 
 function wrapText(x, t, a, b, w, lh) {
