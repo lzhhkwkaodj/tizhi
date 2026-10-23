@@ -32,15 +32,22 @@
     --moss:#9FAF9C;
   }
 }
+/* 九质各一色：色值全部在 JS 里预混好，不依赖 color-mix，微信内核也稳 */
 [data-tone]{
   --tone:var(--tone-l,#A63D2B);
-  --tone-ink:color-mix(in srgb,var(--tone) 74%,var(--ink));
-  --tone-soft:color-mix(in srgb,var(--tone) 9%,transparent);
-  --tone-press:color-mix(in srgb,var(--tone) 17%,transparent);
+  --tone-ink:var(--tone-ink-l,var(--ink));
+  --tone-soft:var(--tone-soft-l,transparent);
+  --tone-press:var(--tone-press-l,transparent);
+  --tone-wash:var(--tone-wash-l,var(--paper));
 }
-@media (prefers-color-scheme:dark){[data-tone]{--tone:var(--tone-d,#D57963)}}
-@supports not (color:color-mix(in srgb,red,blue)){
-  [data-tone]{--tone-ink:var(--ink);--tone-soft:transparent;--tone-press:transparent}
+@media (prefers-color-scheme:dark){
+  [data-tone]{
+    --tone:var(--tone-d,#D57963);
+    --tone-ink:var(--tone-ink-d,var(--ink));
+    --tone-soft:var(--tone-soft-d,transparent);
+    --tone-press:var(--tone-press-d,transparent);
+    --tone-wash:var(--tone-wash-d,var(--paper));
+  }
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;padding:0}
@@ -102,24 +109,25 @@ h1,h2,h3,p{margin:0}
 @media (prefers-color-scheme:dark){.board{box-shadow:7px 8px 0 -1px var(--line-2),0 20px 32px -20px #000}}
 .tile{
   position:relative;display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;
-  min-height:94px;padding:9px 11px 9px;background:var(--tone-soft);border:0;
+  min-height:94px;padding:12px 11px 9px;background:var(--paper);border:0;
   border-right:1px solid var(--line-2);border-bottom:1px solid var(--line-2);
   box-shadow:inset 0 1px 0 rgba(255,255,255,.28);
   text-align:left;cursor:pointer;transition:background .25s var(--ease),box-shadow .25s var(--ease);
   animation:tileIn .55s var(--ease) both;
 }
+.tile:before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:var(--tone);opacity:.92}
 @media (prefers-color-scheme:dark){.tile{box-shadow:inset 0 1px 0 rgba(255,255,255,.05)}}
 .tile:nth-child(2){animation-delay:.035s}.tile:nth-child(3){animation-delay:.07s}
 .tile:nth-child(4){animation-delay:.105s}.tile:nth-child(5){animation-delay:.14s}.tile:nth-child(6){animation-delay:.175s}
 .tile:nth-child(7){animation-delay:.21s}.tile:nth-child(8){animation-delay:.245s}.tile:nth-child(9){animation-delay:.28s}
 @keyframes tileIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-.tile-no{font-family:var(--mono);font-size:8px;letter-spacing:.1em;color:var(--tone-ink);opacity:.65}
-.tile-char{font-family:var(--serif);font-size:31px;line-height:1;font-weight:600;color:var(--tone-ink);transition:color .25s var(--ease)}
+.tile-no{font-family:var(--mono);font-size:8px;letter-spacing:.1em;color:var(--tone-ink);opacity:.8}
+.tile-char{font-family:var(--serif);font-size:32px;line-height:1;font-weight:600;color:var(--tone-ink);transition:color .25s var(--ease)}
 .tile-name{font-size:10.5px;letter-spacing:.08em;color:var(--ink-2);transition:color .25s}
 .tile.is-on{background:var(--tone-press);box-shadow:inset 0 2px 5px rgba(12,16,13,.10)}
-@media (hover:hover){.tile:hover{background:var(--tone-press)}.tile:hover .tile-char{color:var(--tone-ink)}}
+@media (hover:hover){.tile:hover{background:var(--tone-soft)}.tile:hover .tile-char{color:var(--tone-ink)}}
 .board-note{
-  min-height:3.5em;margin:16px 0 0;padding-left:12px;border-left:2px solid var(--tone-ink,var(--cinnabar));
+  min-height:3.5em;margin:16px 0 0;padding-left:12px;border-left:3px solid var(--tone-ink,var(--cinnabar));
   font-size:12.5px;line-height:1.75;color:var(--ink-2);
 }
 .board-note b{font-weight:600;color:var(--ink);margin-right:8px}
@@ -214,8 +222,10 @@ h1,h2,h3,p{margin:0}
   padding:24px 0 12px;border-bottom:1px solid var(--line);
   font-family:var(--mono);font-size:8.5px;letter-spacing:.12em;color:var(--muted);
 }
+#s-result .report-head{border-bottom-color:var(--tone-ink,var(--line))}
 .badge{
-  display:inline-block;padding:4px 8px;border:1px solid var(--tone-ink,var(--cinnabar));color:var(--tone-ink,var(--cinnabar));
+  display:inline-block;padding:4px 8px;border:1px solid var(--tone-ink,var(--cinnabar));
+  background:var(--tone-ink,var(--cinnabar));color:var(--paper);
   font-family:var(--mono);font-size:8.5px;letter-spacing:.12em;line-height:1.2;
 }
 .tags{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
@@ -234,7 +244,7 @@ h1,h2,h3,p{margin:0}
 .idcard{position:relative;isolation:isolate}
 .idcard:before{
   content:"";position:absolute;inset:8px -7px -11px 7px;z-index:-1;
-  background:var(--paper);border:1px solid var(--line);
+  background:var(--tone-wash,var(--paper));border:1px solid var(--line);
   box-shadow:0 28px 46px -32px rgba(12,16,13,.55);
 }
 .idcard-flip{position:relative;display:grid}
@@ -243,9 +253,10 @@ h1,h2,h3,p{margin:0}
   min-height:452px;padding:24px 22px 20px;
   background:
     radial-gradient(120% 88% at 100% 0%,var(--tone-soft,transparent),transparent 58%),
-    radial-gradient(130% 100% at 8% 0%,rgba(255,255,255,.55),transparent 55%),
-    linear-gradient(155deg,var(--sheet),var(--paper) 72%);
+    radial-gradient(130% 100% at 8% 0%,rgba(255,255,255,.5),transparent 55%),
+    linear-gradient(155deg,var(--tone-wash,var(--sheet)),var(--paper) 72%);
   border:1px solid var(--line-2);
+  border-top:4px solid var(--tone-ink,var(--cinnabar));
   box-shadow:
     0 1px 0 rgba(255,255,255,.5) inset,
     0 34px 60px -34px rgba(12,16,13,.55),
@@ -255,8 +266,8 @@ h1,h2,h3,p{margin:0}
 @media (prefers-color-scheme:dark){
   .idface{
     background:radial-gradient(120% 88% at 100% 0%,var(--tone-soft,transparent),transparent 58%),
-      radial-gradient(130% 100% at 8% 0%,rgba(255,255,255,.07),transparent 55%),
-      linear-gradient(155deg,var(--sheet),var(--paper) 72%);
+      radial-gradient(130% 100% at 8% 0%,rgba(255,255,255,.06),transparent 55%),
+      linear-gradient(155deg,var(--tone-wash,var(--sheet)),var(--paper) 72%);
     box-shadow:0 1px 0 rgba(255,255,255,.06) inset,0 36px 70px -30px #000,0 8px 18px -12px rgba(0,0,0,.8);
   }
 }
@@ -308,11 +319,11 @@ h1,h2,h3,p{margin:0}
 .id-controls{display:flex;align-items:center;gap:12px;margin-top:16px}
 .id-flip{
   display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:11px 16px;
-  border:1px solid var(--line-2);background:transparent;color:var(--ink);
+  border:1px solid var(--tone-ink,var(--line-2));background:var(--tone-soft,transparent);color:var(--ink);
   font-size:11.5px;letter-spacing:.05em;cursor:pointer;
   transition:background .25s,border-color .25s,color .25s;
 }
-.id-flip:hover{background:var(--tone-soft,var(--cinnabar-soft));border-color:var(--tone-ink,var(--cinnabar))}
+.id-flip:hover{background:var(--tone-press,var(--cinnabar-soft));border-color:var(--tone-ink,var(--cinnabar))}
 @media (max-width:360px){
   .idface{min-height:430px;padding:20px 18px 18px}
   .id-seal{top:50px;right:18px;width:66px;height:66px;font-size:40px}
@@ -782,24 +793,36 @@ const A = window.CCMQAdvice || {};     // 对外版：只含食材清单与起�
 const LS = 'ccmq.v2';
 const state = { i: 0, answers: {}, sex: '' };
 const ESSENCE = { pinghe:'和', qixu:'气', yangxu:'阳', yinxu:'阴', tanshi:'痰', shire:'湿', xueyu:'瘀', qiyu:'郁', tebing:'禀' };
-/* 九质各一色：l 浅色模式，d 深色模式；文字与印章再用 ink 混出可读的深/浅档 */
+/* 九质各一色：l 浅色模式，d 深色模式；深/浅印字与纸底在 JS 里预混，不靠 color-mix */
 const TONE = {
-  pinghe:{ l:'#5F8C7B', d:'#9BC4B2' }, qixu:{ l:'#B07A34', d:'#E0B77B' },
-  yangxu:{ l:'#B9543C', d:'#E6957C' }, yinxu:{ l:'#4C74A0', d:'#91B6DB' },
-  tanshi:{ l:'#8E6646', d:'#C9A47C' }, shire:{ l:'#747B36', d:'#B8BF79' },
-  xueyu:{ l:'#84425F', d:'#CF95AE' }, qiyu:{ l:'#3E7375', d:'#83B8B6' },
-  tebing:{ l:'#6E6885', d:'#B7AFCB' }
+  pinghe:{ l:'#4F7D68', d:'#9CC4AF' }, qixu:{ l:'#B07C35', d:'#DFB273' },
+  yangxu:{ l:'#BE4D36', d:'#E99479' }, yinxu:{ l:'#3F6E9C', d:'#93B8DC' },
+  tanshi:{ l:'#8F5C3D', d:'#C69E78' }, shire:{ l:'#6E7A32', d:'#B6BE6F' },
+  xueyu:{ l:'#8A3A58', d:'#D296B0' }, qiyu:{ l:'#34777A', d:'#82BAB8' },
+  tebing:{ l:'#71678C', d:'#B4A9CA' }
 };
 const toneOf = k => TONE[k] || TONE[S.pingheKey];
 const mixHex = (a, b, t) => '#' + [1, 3, 5].map(i =>
   Math.round(parseInt(a.slice(i, i + 2), 16) * t + parseInt(b.slice(i, i + 2), 16) * (1 - t))
     .toString(16).padStart(2, '0')).join('');
-const toneVars = k => `--tone-l:${toneOf(k).l};--tone-d:${toneOf(k).d}`;
+const hexRgba = (h, a) => `rgba(${parseInt(h.slice(1, 3), 16)},${parseInt(h.slice(3, 5), 16)},${parseInt(h.slice(5, 7), 16)},${a})`;
+const toneVars = k => {
+  const t = toneOf(k);
+  return [
+    `--tone-l:${t.l}`, `--tone-d:${t.d}`,
+    `--tone-ink-l:${mixHex(t.l, '#161A17', .70)}`, `--tone-ink-d:${mixHex(t.d, '#EDE7DA', .72)}`,
+    `--tone-soft-l:${hexRgba(t.l, .08)}`, `--tone-soft-d:${hexRgba(t.d, .12)}`,
+    `--tone-press-l:${hexRgba(t.l, .16)}`, `--tone-press-d:${hexRgba(t.d, .20)}`,
+    `--tone-wash-l:${mixHex(t.l, '#FAF7F0', .15)}`, `--tone-wash-d:${mixHex(t.d, '#171C18', .18)}`
+  ].join(';');
+};
 const toneAttr = k => `data-tone="${k}" style="${toneVars(k)}"`;
 const applyTone = (el, k) => {
   el.dataset.tone = k;
-  el.style.setProperty('--tone-l', toneOf(k).l);
-  el.style.setProperty('--tone-d', toneOf(k).d);
+  toneVars(k).split(';').forEach(p => {
+    const i = p.indexOf(':');
+    el.style.setProperty(p.slice(0, i), p.slice(i + 1));
+  });
 };
 /* 把标准里的“主要特征”翻译成用户能立刻对上号的一句话 */
 // 量表五个词保留国标原词，括号里的同义解释换成更像日常说话的锚点；分值不变。
@@ -1145,10 +1168,11 @@ function drawCard() {
         LINE = '#D8D1C3';
   const TONE_MAIN = toneOf(target.key).l;
   const CINN = mixHex(TONE_MAIN, INK, .74);
+  const CARD = mixHex(TONE_MAIN, PAPER, .10);
   const L = 88, R = W - 88;
   const dstr = new Date().toLocaleDateString('zh-CN', { year:'numeric', month:'2-digit', day:'2-digit' }).replace(/\//g, '.');
 
-  x.fillStyle = PAPER; x.fillRect(0, 0, W, H);
+  x.fillStyle = CARD; x.fillRect(0, 0, W, H);
   x.strokeStyle = LINE; x.lineWidth = 2; x.strokeRect(40, 40, W - 80, H - 80);
   x.textBaseline = 'alphabetic';
 
