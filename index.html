@@ -81,10 +81,10 @@ h1,h2,h3,p{margin:0}
 }
 .facts span{display:inline-flex;align-items:center;white-space:nowrap}
 .facts span+span:before{content:"";width:3px;height:3px;border-radius:50%;background:var(--line-2);margin:0 12px}
-.board-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin:38px 0 10px}
-.board-head h2{font-size:13px;font-weight:600;letter-spacing:.06em}
-.board-head span{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;color:var(--muted)}
 .board-stage{perspective:900px}
+.typebook{margin-top:44px}
+.typebook .board-stage{margin-top:4px}
+.typebook .board-note{margin:14px 0 18px}
 .board{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line-2);border-left:1px solid var(--line-2);
   transform-style:preserve-3d;transform:rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));
   transition:transform .55s var(--ease);}
@@ -464,15 +464,6 @@ canvas{display:none}
         </div>
       </div>
 
-      <div class="board-head">
-        <h2>九质谱</h2>
-        <span>点一格 · 看特征</span>
-      </div>
-      <div class="board-stage" id="boardStage">
-        <div class="board" id="board" role="group" aria-label="九种体质索引"></div>
-      </div>
-      <p class="board-note" id="boardNote" aria-live="polite">九格只是索引，不是你测出来的结果。点一格，看看它讲的是什么。</p>
-
       <div class="startblock">
         <span class="fieldlabel">答题前先选性别<em class="req">必选</em></span>
         <p class="fieldnote">只用来跳过不适用的那道题，答案不上传。</p>
@@ -489,6 +480,14 @@ canvas{display:none}
         <h2 class="section-head">填答须知<em>约 4 分钟</em></h2>
         <ol class="tips" id="homeTips"></ol>
       </section>
+
+      <details class="fullref typebook" id="typebook">
+        <summary><span>九种体质，先认一遍</span><em>点一格看特征</em><span class="legal-plus">+</span></summary>
+        <div class="board-stage" id="boardStage">
+          <div class="board" id="board" role="group" aria-label="九种体质索引"></div>
+        </div>
+        <p class="board-note" id="boardNote" aria-live="polite">九格只是索引，不是你测出来的结果。点一格，看看它讲的是什么。</p>
+      </details>
 
       <footer>
         <p class="fineprint" id="homeSrc"></p>
